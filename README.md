@@ -1,6 +1,6 @@
 # `fastify-micro`
 
-[![NPM](https://img.shields.io/npm/v/@47ng/fastify-micro?color=red)](https://www.npmjs.com/package/fastify-micro)
+[![NPM](https://img.shields.io/npm/v/fastify-micro?color=red)](https://www.npmjs.com/package/fastify-micro)
 [![MIT License](https://img.shields.io/github/license/47ng/fastify-micro.svg?color=blue)](https://github.com/47ng/fastify-micro/blob/master/LICENSE)
 [![Travis CI Build](https://img.shields.io/travis/com/47ng/fastify-micro.svg)](https://travis-ci.com/47ng/fastify-micro)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=47ng/fastify-micro)](https://dependabot.com)
