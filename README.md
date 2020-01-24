@@ -112,13 +112,18 @@ createServer({
 })
 ```
 
+> _**ProTip**_: If you're returning Personally Identifiable Information
+> in your enrichment callbacks, don't forget to mention it in your
+> privacy policy :)
+
 #### Sentry Releases
 
-There are two ways to tell Sentry about which Release to use when
-reporting errors:
+There are two ways to tell Sentry about which
+[Release](https://docs.sentry.io/workflow/releases/?platform=node)
+to use when reporting errors:
 
 - Via the `SENTRY_RELEASE` environment variable
-- Via the `sentry.release` option key:
+- Via the options:
 
 ```ts
 import { createServer } from 'fastify-micro'
@@ -143,9 +148,9 @@ by the environment variable.
 
 ### Service availability monitoring & health check
 
-We use [`under-pressure`](https://github.com/fastify/under-pressure)
-to monitor the health of the service, and expose a health check route
-at `/_health`.
+[`under-pressure`](https://github.com/fastify/under-pressure)
+is used to monitor the health of the service, and expose a health check
+route at `/_health`.
 
 Default configuration:
 
@@ -158,11 +163,15 @@ key in the server options:
 ```ts
 createServer({
   underPressure: {
-    // We recommend you define at least this one if you need
-    // to check the status of dependent services:
-    healthCheck: async () => {
-      // eg: Check database connection here
-      return true
+    // Custom health check for testing attached services health:
+    healthCheck: async server => {
+      try {
+        await server.db.checkConnection()
+        return true
+      } catch (error) {
+        server.sentry.report(error)
+        return false
+      }
     },
 
     // You can also pass anything accepted by under-pressure options:
@@ -170,6 +179,10 @@ createServer({
   }
 })
 ```
+
+> _**Note**_: The type for the `healthCheck` property differs from
+> `under-pressure`: here the server is passed as an argument for
+> convenience.
 
 ### Loading routes from the filesystem
 
@@ -217,7 +230,39 @@ export const fastifyMicroSkipRouteLoad = true
 
 The following plugins are loaded by default:
 
-- [`fastify-sensible`](https://github.com/fastify/fastify-sensible), for convention-based error handling.
+- [`fastify-sensible`](https://github.com/fastify/fastify-sensible),
+  for convention-based error handling.
+
+### Loading other plugins
+
+The server returned by `createServer` is a fastify instance, you can
+register any fastify-compatible plugin onto it, and use the full Fastify
+API:
+
+```ts
+const server = createServer()
+
+server.register(require('fastify-cors'))
+
+server.get('/', () => 'Hello, world !')
+```
+
+For loading plugins before filesystem routes are loaded, a `configure`
+method can be provided in the options:
+
+```ts
+const server = createServer({
+  configure: server => {
+    server.addHook('onRoute', route => {
+      // Will be invoked for every loaded route
+    })
+    // Will run before the routes are loaded
+    server.decorate('db', databaseClient)
+  }
+})
+
+server.decorate('after', 'Will run after the routes are loaded')
+```
 
 ## License
 
