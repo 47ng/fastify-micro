@@ -16,7 +16,10 @@ export default function loadRoutesFromFileSystem<S extends Server>(
   })
   files.forEach(file => {
     try {
-      server.register(require(file).default)
+      const route = require(file)
+      if (route.fastifyMicroSkipRouteLoad !== true) {
+        server.register(route.default)
+      }
       logger.trace({
         message: 'Loaded route file',
         path: file
