@@ -26,7 +26,7 @@ export type Options<S extends Server> = ServerOptions & {
    * The following internal env var names will be added:
    * - SENTRY_DSN
    */
-  secureEnv?: string[]
+  redactEnv?: string[]
 
   /**
    * Add your own plugins in this callback.
@@ -74,7 +74,7 @@ export function createServer<S extends Server>(
   checkEnv({ required: ['NODE_ENV'] })
 
   const server = Fastify({
-    logger: getLoggerOptions(options.name, options.secureEnv),
+    logger: getLoggerOptions(options.name, options.redactEnv),
     // todo: Fix type when switching to Fastify 3.x
     genReqId: makeReqIdGenerator() as any,
     trustProxy: process.env.TRUSTED_PROXY_IPS,
