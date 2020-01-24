@@ -110,7 +110,7 @@ environment variables:
 | `INSTANCE_ID` | `instance` | An identifier for the machine that runs your application |
 | `COMMIT_ID`   | `commit`   | The git SHA-1 of your code                               |
 
-> _**Note**_: For `INSTANCE_ID` and `COMMIT_ID`, only the first 8
+> _**Note**_: for `INSTANCE_ID` and `COMMIT_ID`, only the first 8
 > characters will be logged and sent to Sentry.
 
 #### Request ID
@@ -127,7 +127,7 @@ To9hgCK4MvOmFRVM.oPoAOhj93kEgbIdV
 It is made of two parts, separated by a dot `'.'`:
 
 - `To9hgCK4MvOmFRVM` is the user fingerprint
-- `oPoAOhj93kEgbIdV` is the request ID
+- `oPoAOhj93kEgbIdV` is a random identifier
 
 The user fingerprint is a hash of the following elements:
 
@@ -174,7 +174,7 @@ services / instances.
 
 ### Sentry
 
-Opt-in support for [Sentry](https://sentry.io) is provided, and can be
+Built-in support for [Sentry](https://sentry.io) is provided, and can be
 activated by setting the `SENTRY_DSN` environment variable to the
 [DSN](https://docs.sentry.io/error-reporting/quickstart/?platform=node#configure-the-sdk)
 that is found in your project settings.
@@ -227,7 +227,7 @@ createServer({
 })
 ```
 
-> _**ProTip**_: If you're returning Personally Identifiable Information
+> _**ProTip**_: if you're returning Personally Identifiable Information
 > in your enrichment callbacks, don't forget to mention it in your
 > privacy policy :)
 
@@ -295,7 +295,7 @@ createServer({
 })
 ```
 
-> _**Note**_: The type for the `healthCheck` property differs from
+> _**Note**_: the type for the `healthCheck` property differs from
 > `under-pressure`: here the server is passed as an argument for
 > convenience.
 
@@ -336,7 +336,7 @@ export const fastifyMicroSkipRouteLoad = true
 // This file will be ignored by the router.
 ```
 
-> _**Note**_: The file will still be `require`'d, so any side effects
+> _**Note**_: the file will still be `require`'d, so any side effects
 > _will_ run.
 
 ### Other default plugins & configuration
