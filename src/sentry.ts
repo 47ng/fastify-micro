@@ -37,14 +37,19 @@ function sentryPlugin(
         ip_address: req?.ip
       }
       if (options.getUser && req) {
-        user = {
-          ...user,
-          ...(await options.getUser(server, req))
-        }
+        try {
+          user = {
+            ...user,
+            ...(await options.getUser(server, req))
+          }
+        } catch {}
       }
-      const extras = options.getExtras
-        ? await options.getExtras(server, req)
-        : {}
+      let extras = {}
+      if (options.getExtras) {
+        try {
+          extras = await options.getExtras(server, req)
+        } catch {}
+      }
 
       Sentry.withScope(scope => {
         if (user) {
