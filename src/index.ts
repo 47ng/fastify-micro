@@ -42,7 +42,9 @@ export type Options<S extends Server> = ServerOptions & {
   /**
    * Add custom options for under-pressure
    */
-  underPressure?: UnderPressureOptions
+  underPressure?: Omit<UnderPressureOptions, 'healthCheck'> & {
+    healthCheck: (server: S) => Promise<boolean>
+  }
 
   /**
    * Add custom options for Sentry
@@ -109,6 +111,7 @@ export function createServer<S extends Server>(
     loadRoutesFromFileSystem(server, options.routesDir)
   }
 
+  const { healthCheck, ...underPressureOptions } = options.underPressure || {}
   server.register(underPressurePlugin, {
     maxEventLoopDelay: 1000, // 1s
     // maxHeapUsedBytes: 100 * (1 << 20), // 100 MiB
@@ -121,9 +124,12 @@ export function createServer<S extends Server>(
       }
     },
     healthCheck: async () => {
+      if (healthCheck) {
+        return await healthCheck(server)
+      }
       return true
     },
-    ...(options.underPressure || {})
+    ...underPressureOptions
   })
 
   if (process.env.NODE_ENV === 'development') {
