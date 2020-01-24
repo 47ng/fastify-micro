@@ -1,38 +1,31 @@
-# `typescript-library-starter`
+# `fastify-micro`
 
-[![NPM](https://img.shields.io/npm/v/@47ng/typescript-library-starter?color=red)](https://www.npmjs.com/package/codec)
-[![MIT License](https://img.shields.io/github/license/47ng/typescript-library-starter.svg?color=blue)](https://github.com/47ng/typescript-library-starter/blob/master/LICENSE)
-[![Travis CI Build](https://img.shields.io/travis/com/47ng/typescript-library-starter.svg)](https://travis-ci.com/47ng/typescript-library-starter)
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=47ng/typescript-library-starter)](https://dependabot.com)
-[![Average issue resolution time](https://isitmaintained.com/badge/resolution/47ng/typescript-library-starter.svg)](https://isitmaintained.com/project/47ng/typescript-library-starter)
-[![Number of open issues](https://isitmaintained.com/badge/open/47ng/typescript-library-starter.svg)](https://isitmaintained.com/project/47ng/typescript-library-starter)
+[![NPM](https://img.shields.io/npm/v/@47ng/fastify-micro?color=red)](https://www.npmjs.com/package/fastify-micro)
+[![MIT License](https://img.shields.io/github/license/47ng/fastify-micro.svg?color=blue)](https://github.com/47ng/fastify-micro/blob/master/LICENSE)
+[![Travis CI Build](https://img.shields.io/travis/com/47ng/fastify-micro.svg)](https://travis-ci.com/47ng/fastify-micro)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=47ng/fastify-micro)](https://dependabot.com)
+[![Average issue resolution time](https://isitmaintained.com/badge/resolution/47ng/fastify-micro.svg)](https://isitmaintained.com/project/47ng/fastify-micro)
+[![Number of open issues](https://isitmaintained.com/badge/open/47ng/fastify-micro.svg)](https://isitmaintained.com/project/47ng/fastify-micro)
 
-Template repository for TypeScript libraries.
+Opinionated Node.js microservices framework built on fastify
+
+## Features
+
+- Secure and useful logging utilities
+  - Redaction of environment variable (with redact-env)
+  - Redaction of security headers (with pino's built-in redaction)
+  - Request ID with rotatable fingerprinting
+- Graceful exit
+- Sentry support
+- Load all routes from a directory
+- First class TypeScript support
 
 ## Installation
 
-✂️---
-_Cut here_
-
-1. [Use this repository as a template](https://github.com/47ng/typescript-library-starter/generate) to create your own.
-2. Replace all mentions of `typescript-library-starter` with the name
-   of your package.
-3. Setup Travis CI by adding an NPM deploy token and a Slack channel token:
-
-```zsh
-# Copy your NPM deploy token to clipboard, then:
-$ travis encrypt $(pbpaste) --add deploy.api_key --com
-
-# Copy your Slack channel token to clipboard, then:
-$ travis encrypt $(pbpaste) --add notifications.slack.rooms --com
-```
-
---- ✂️
-
 ```shell
-$ yarn add typescript-library-starter
+$ yarn add fastify-micro
 # or
-$ npm i typescript-library-starter
+$ npm i fastify-micro
 ```
 
 ## Usage
@@ -41,4 +34,4 @@ $ npm i typescript-library-starter
 
 ## License
 
-[MIT](https://github.com/47ng/typescript-library-starter/blob/master/LICENSE) - Made with ❤️ by [François Best](https://francoisbest.com).
+[MIT](https://github.com/47ng/fastify-micro/blob/master/LICENSE) - Made with ❤️ by [François Best](https://francoisbest.com).

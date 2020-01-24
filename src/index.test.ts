@@ -1,7 +1,8 @@
-import lib from './index'
+import { createServer } from './index'
 
-describe('typescript-library-starter', () => {
-  test('testing works', () => {
-    expect(lib).toBe('Hello, World !')
-  })
+it('injects the specified `name` property', () => {
+  const unnamedServer = createServer()
+  expect(unnamedServer.name).toBeUndefined()
+  const namedServer = createServer({ name: 'foo' })
+  expect(namedServer.name).toBe('foo')
 })
