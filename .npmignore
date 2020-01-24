@@ -4,3 +4,5 @@ nodemon.json
 .env
 .volumes/
 yarn-error.log
+src/
+.travis.yml
