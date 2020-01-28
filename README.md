@@ -299,45 +299,27 @@ createServer({
 > `under-pressure`: here the server is passed as an argument for
 > convenience.
 
-### Loading routes from the filesystem
+### Auto-loading routes and plugins from the filesystem
 
-Routes can be loaded from the filesystem, by passing a path to
-recursively walk to the `routesDir` option:
+Routes and plugins can be loaded from the filesystem using
+[`fastify-autoload`](https://github.com/fastify/fastify-autoload),
+by passing a path to load recursively from:
 
 ```ts
 import path from 'path'
 import { createServer } from 'fastify-micro'
 
 createServer({
-  // Will load every file in ./routes
+  // Will load every file in ./routes/**
   routesDir: path.join(__dirname, 'routes')
 })
 ```
 
-Any file found under `rootDir` will be registered as a fastify plugin.
-Failures will be ignored, and reported at the `trace` log level.
-
 > _**Note**_: in development, the server will log its routes on startup.
+> This can be useful to see what routes will be active.
 
-Unlike Next.js filesystem-based routing, no assumption is made on the
-name of your files vs the path of your routes. You are free to organise
-your routes directory as you wish.
-
-### Skip loading a file
-
-If you have files under the routes directory that you don't want
-registered, you can tell the router to skip it:
-
-```ts
-// ./routes/utility/do-not-load.ts
-
-export const fastifyMicroSkipRouteLoad = true
-
-// This file will be ignored by the router.
-```
-
-> _**Note**_: the file will still be `require`'d, so any side effects
-> _will_ run.
+Check out the [`fastify-autoload` documentation](https://github.com/fastify/fastify-autoload)
+for more details.
 
 ### Other default plugins & configuration
 

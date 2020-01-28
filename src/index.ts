@@ -1,11 +1,11 @@
 import checkEnv from '@47ng/check-env'
 import Fastify, { FastifyInstance, ServerOptions } from 'fastify'
-import { getLoggerOptions, makeReqIdGenerator } from './logger'
+import autoLoad from 'fastify-autoload'
 import sensible from 'fastify-sensible'
 import gracefulShutdown from 'fastify-graceful-shutdown'
 import underPressurePlugin, { UnderPressureOptions } from 'under-pressure'
+import { getLoggerOptions, makeReqIdGenerator } from './logger'
 import sentry, { SentryReporter, SentryOptions } from './sentry'
-import loadRoutesFromFileSystem from './router'
 
 export type Server = FastifyInstance & {
   name?: string
@@ -108,7 +108,10 @@ export function createServer<S extends Server>(
   }
 
   if (options.routesDir) {
-    loadRoutesFromFileSystem(server, options.routesDir)
+    server.register(autoLoad, {
+      dir: options.routesDir,
+      includeTypeScript: true
+    })
   }
 
   const { healthCheck, ...underPressureOptions } = options.underPressure || {}
