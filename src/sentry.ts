@@ -19,6 +19,17 @@ export interface SentryOptions<S extends Server> {
   ) => Promise<{ [key: string]: any }>
 }
 
+// --
+
+export function getSentryReleaseName(server: Server) {
+  const date = new Date().toISOString().slice(0, 10)
+  const commit = process.env.COMMIT_ID
+  const name = server.name
+  return [date, commit, name].filter(x => !!x).join('.')
+}
+
+// --
+
 function sentryPlugin(
   server: Server,
   options: SentryOptions<Server> = {},
@@ -26,7 +37,10 @@ function sentryPlugin(
 ) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
-    release: options.release ?? process.env.SENTRY_RELEASE,
+    release:
+      options.release ??
+      process.env.SENTRY_RELEASE ??
+      getSentryReleaseName(server),
     environment: process.env.NODE_ENV,
     enabled: !!process.env.SENTRY_DSN
   })
