@@ -57,10 +57,12 @@ function sentryPlugin(
         }
         scope.setTags({
           path: req?.raw.url ?? 'Not available',
-          instance: process.env.INSTANCE_ID?.slice(0, 8) ?? 'Not available'
+          ...(server.name ? { service: server.name } : {})
         })
         scope.setExtras({
           'request ID': req?.id,
+          instance: process.env.INSTANCE_ID?.slice(0, 8) ?? 'Not available',
+          commit: process.env.COMMIT_ID?.slice(0, 8),
           ...extras
         })
         Sentry.captureException(error)
