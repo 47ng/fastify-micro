@@ -144,15 +144,15 @@ export function createServer<S extends Server>(
 }
 
 export async function startServer<S extends Server>(server: S, port: number) {
-  await new Promise(resolve => {
+  await server.ready()
+  return await new Promise<S>(resolve => {
     server.listen({ port, host: '0.0.0.0' }, (error, address) => {
       if (error) {
         server.log.fatal({ msg: `Application startup error`, error, address })
         process.exit(1)
       } else {
-        resolve()
+        resolve(server)
       }
     })
   })
-  return await server.ready()
 }
