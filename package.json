@@ -1,6 +1,6 @@
 {
   "name": "fastify-micro",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Opinionated Node.js microservices framework built on fastify",
   "main": "dist/index.js",
   "license": "MIT",
