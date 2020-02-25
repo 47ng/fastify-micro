@@ -4,7 +4,11 @@ import * as Sentry from '@sentry/node'
 import { Server } from './index'
 
 export interface SentryReporter {
-  report: <R extends FastifyRequest>(error: Error, req?: R) => Promise<void>
+  report: <R extends FastifyRequest>(
+    error: Error,
+    req?: R,
+    extra?: { [key: string]: any }
+  ) => Promise<void>
 }
 
 export interface SentryOptions<S extends Server> {
@@ -46,7 +50,7 @@ function sentryPlugin(
   })
 
   const reporter: SentryReporter = {
-    async report(error, req) {
+    async report(error, req, extra = {}) {
       let user: Sentry.User = {
         ip_address: req?.ip
       }
@@ -58,10 +62,13 @@ function sentryPlugin(
           }
         } catch {}
       }
-      let extras = {}
+      let extras = extra
       if (options.getExtras) {
         try {
-          extras = await options.getExtras(server, req)
+          extras = {
+            ...extra,
+            ...(await options.getExtras(server, req))
+          }
         } catch {}
       }
 
