@@ -713,22 +713,12 @@ agent-base@5:
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-5.1.1.tgz#e8fb3f242959db44d63be665db7a8e739537a32c"
   integrity sha512-TMeqbNl2fMW0nMjTEPOwe3J/PRFP4vqeoNuQMG0HlMrtm5QxKqdvAkZ1pRBQ/ulIyDD5Yq0nJ7YbdD8ey0TO3g==
 
-ajv@^6.10.2, ajv@^6.11.0:
+ajv@^6.10.2, ajv@^6.11.0, ajv@^6.5.5:
   version "6.11.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.11.0.tgz#c3607cbc8ae392d8a5a536f25b21f8e5f3f87fe9"
   integrity sha512-nCprB/0syFYy9fVYU1ox1l2KN8S9I+tziH8D4zdZuLT3N6RMlGSGt5FSTpAiHB/Whv8Qs1cWHma1aMKZyaHRKA==
   dependencies:
     fast-deep-equal "^3.1.1"
-    fast-json-stable-stringify "^2.0.0"
-    json-schema-traverse "^0.4.1"
-    uri-js "^4.2.2"
-
-ajv@^6.5.5:
-  version "6.10.2"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.10.2.tgz#d3cea04d6b017b2894ad69040fec8b623eb4bd52"
-  integrity sha512-TXtUUEYHuaTEbLZWIKUr5pmBuhDLy+8KYtPYdcV8qC+pOZL+NKqYwvWSRrVXHn+ZmRRAu8vJTAznH7Oag6RVRw==
-  dependencies:
-    fast-deep-equal "^2.0.1"
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
@@ -1749,9 +1739,9 @@ fastify-sensible@^2.1.1:
     vary "^1.1.2"
 
 fastify@^2.12.0:
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/fastify/-/fastify-2.12.0.tgz#c2cb051c8741ee733d47d5deee0d8be34d8790e8"
-  integrity sha512-xwYgmJ/vWvVH78mhRfA3IxKeG2wkoi1WsExny4ukbNMI6f0S2B1n3SMxtGJp+qISOR1FAv3D8KZyEXVAGa4Ewg==
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-2.12.1.tgz#2c203b6a939208143c781a4fb389436c30f6f4f1"
+  integrity sha512-6WmLj8xfl1IIcBgt2tyvprnb9zIatxGMjm3xb2cWWIjqDgMw6NvFlq4MuHZAydTCk5j25DkpyUNQ/IyY+XVVuQ==
   dependencies:
     abstract-logging "^2.0.0"
     ajv "^6.10.2"
