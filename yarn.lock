@@ -1718,9 +1718,9 @@ fastfall@^1.5.0:
     reusify "^1.0.0"
 
 fastify-autoload@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/fastify-autoload/-/fastify-autoload-1.2.1.tgz#ef1a5c14c41a509b7c2480eac85863638ee326f8"
-  integrity sha512-yrCofjojW8JBt8ZGr9hOZTBJ1/jFXqm4BIUBSwqLtbvZwOePldlB33up+dNMq6Mo+eH+eMdoCUsm4jXmji2+CQ==
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/fastify-autoload/-/fastify-autoload-1.2.2.tgz#e1536fe2b617f0dbfe099113630950fe3d122f16"
+  integrity sha512-jHPDa6ZQqxzLwSbKaG5B7HEpqJrw5rO9voSXIQkS6KRXpT6XJ3Y6rGif3UNwyKa2stMxGvB/rffeyOskPj6JWw==
   dependencies:
     steed "^1.1.3"
 
