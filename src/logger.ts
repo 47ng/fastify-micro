@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import pino from 'pino'
 import SonicBoom from 'sonic-boom'
 import redactEnv from 'redact-env'
-import nanoid from 'nanoid'
+import { nanoid } from 'nanoid'
 import { FastifyRequest } from 'fastify'
 
 function createRedactedStream(
