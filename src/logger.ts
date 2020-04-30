@@ -98,7 +98,7 @@ export const makeReqIdGenerator = (defaultSalt: string = nanoid()) =>
           ? xForwardedFor.split(',')[0]
           : xForwardedFor[0].split(',')[0]
     } else {
-      ipAddress = req.socket.remoteAddress || ''
+      ipAddress = req.socket?.remoteAddress || ''
     }
     const hash = crypto.createHash('sha256')
     hash.update(ipAddress)
