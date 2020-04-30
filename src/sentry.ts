@@ -3,76 +3,97 @@ import fp from 'fastify-plugin'
 import * as Sentry from '@sentry/node'
 import { Server } from './index'
 
+export interface SentryExtra {
+  /**
+   * Tags are searchable key/value pairs, useful for filtering issues/events.
+   */
+  tags: {
+    [key: string]: string
+  }
+  /**
+   * Context is additional data attached to an issue/event,
+   * values here are not searchable.
+   */
+  context: {
+    [key: string]: any
+  }
+}
+
 export interface SentryReporter {
   report: <R extends FastifyRequest>(
     error: Error,
     req?: R,
-    extra?: { [key: string]: any }
+    extra?: Partial<SentryExtra>
   ) => Promise<void>
 }
 
-export interface SentryOptions<S extends Server> {
+export interface SentryOptions<S extends Server> extends Sentry.NodeOptions {
   release?: string
   getUser?: <R extends FastifyRequest>(
     server: S,
     req: R
   ) => Promise<Sentry.User>
-  getExtras?: <R extends FastifyRequest>(
+  getExtra?: <R extends FastifyRequest>(
     server: S,
     req?: R
-  ) => Promise<{ [key: string]: any }>
+  ) => Promise<Partial<SentryExtra>>
 }
 
 // --
 
 function sentryPlugin(
   server: Server,
-  options: SentryOptions<Server> = {},
+  options: SentryOptions<Server>,
   next: (err?: FastifyError) => void
 ) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     release: options.release ?? process.env.SENTRY_RELEASE,
     environment: process.env.NODE_ENV,
-    enabled: !!process.env.SENTRY_DSN
+    enabled: !!process.env.SENTRY_DSN,
+    ...options
   })
 
   const reporter: SentryReporter = {
     async report(error, req, extra = {}) {
-      let user: Sentry.User = {
-        ip_address: req?.ip
-      }
+      let user: Sentry.User | undefined
       if (options.getUser && req) {
         try {
           user = {
-            ...user,
+            ip_address: req.ip,
             ...(await options.getUser(server, req))
           }
         } catch {}
       }
-      let extras = extra
-      if (options.getExtras) {
+      let extraTags = extra.tags || {}
+      let extraContext = extra.context || {}
+      if (options.getExtra) {
         try {
-          extras = {
-            ...extra,
-            ...(await options.getExtras(server, req))
+          const globalExtra = await options.getExtra(server, req)
+          extraTags = {
+            ...extraTags,
+            ...globalExtra.tags
+          }
+          extraContext = {
+            ...extraContext,
+            ...globalExtra.context
           }
         } catch {}
       }
-
       Sentry.withScope(scope => {
         if (user) {
           scope.setUser(user)
         }
         scope.setTags({
           path: req?.raw.url ?? 'Not available',
-          ...(server.name ? { service: server.name } : {})
+          ...(server.name ? { service: server.name } : {}),
+          ...extraTags
         })
         scope.setExtras({
           'request ID': req?.id,
           instance: process.env.INSTANCE_ID?.slice(0, 8) ?? 'Not available',
           commit: process.env.COMMIT_ID?.slice(0, 8),
-          ...extras
+          ...extraContext
         })
         Sentry.captureException(error)
       })
