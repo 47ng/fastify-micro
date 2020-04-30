@@ -6,7 +6,6 @@ import gracefulShutdown from 'fastify-graceful-shutdown'
 import underPressurePlugin, { UnderPressureOptions } from 'under-pressure'
 import { getLoggerOptions, makeReqIdGenerator } from './logger'
 import sentry, { SentryReporter, SentryOptions } from './sentry'
-export { getSentryReleaseName } from './sentry'
 
 export type Server = FastifyInstance & {
   name?: string
