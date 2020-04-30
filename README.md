@@ -2,10 +2,9 @@
 
 [![NPM](https://img.shields.io/npm/v/fastify-micro?color=red)](https://www.npmjs.com/package/fastify-micro)
 [![MIT License](https://img.shields.io/github/license/47ng/fastify-micro.svg?color=blue)](https://github.com/47ng/fastify-micro/blob/master/LICENSE)
-[![Travis CI Build](https://img.shields.io/travis/com/47ng/fastify-micro.svg)](https://travis-ci.com/47ng/fastify-micro)
+[![Continuous Integration](https://github.com/47ng/fastify-micro/workflows/Continuous%20Integration/badge.svg?branch=next)](https://github.com/47ng/fastify-micro/actions)
+[![Coverage Status](https://coveralls.io/repos/github/47ng/fastify-micro/badge.svg?branch=next)](https://coveralls.io/github/47ng/fastify-micro?branch=next)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=47ng/fastify-micro)](https://dependabot.com)
-[![Average issue resolution time](https://isitmaintained.com/badge/resolution/47ng/fastify-micro.svg)](https://isitmaintained.com/project/47ng/fastify-micro)
-[![Number of open issues](https://isitmaintained.com/badge/open/47ng/fastify-micro.svg)](https://isitmaintained.com/project/47ng/fastify-micro)
 
 Opinionated Node.js microservices framework built on fastify
 
