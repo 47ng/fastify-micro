@@ -43,10 +43,29 @@ startServer(server, 3000)
 Details of the required and accepted (optional) environment variables
 are available in the [`.env.example`](./.env.example) file.
 
+### Listening port
+
+You can provide the port number where the server will be listening as
+the second argument of `startServer`.
+
+If omitted, the port number will be read from the `PORT` environment
+variable:
+
+```ts
+// process.env.PORT = 4000
+
+import { createServer, startServer } from 'fastify-micro'
+
+const server = createServer()
+startServer(server)
+
+// Server started on 0.0.0.0:4000
+```
+
 ### Logging
 
-Fastify has a great logging story with
-[pino](https://github.com/pinojs/pino).
+Fastify already has a great logging story with
+[pino](https://github.com/pinojs/pino), this builds upon it.
 
 #### Logs Redaction
 
@@ -202,7 +221,9 @@ const exampleRoute = (req, res) => {
 You can enrich your error reports by defining two async callbacks:
 
 - `getUser`, to retrieve user information to pass to Sentry
-- `getExtras`, to add any kind of extra key:value information
+- `getExtra`, to add two kinds of extra key:value information:
+  - `tags`: tags are searchable string-based key/value pairs, useful for filtering issues/events.
+  - `context`: extra data to display in issues/events, not searchable.
 
 Example:
 
@@ -216,10 +237,15 @@ createServer({
       const user = await server.db.findUser(req.auth.userID)
       return user
     },
-    getExtras: async (server, req) => {
+    getExtra: async (server, req) => {
       // Req may be undefined here
       return {
-        foo: 'bar'
+        tags: {
+          foo: 'bar' // Can search/filter issues by `foo`
+        },
+        context: {
+          egg: 'spam'
+        }
       }
     }
   }
@@ -229,6 +255,23 @@ createServer({
 > _**ProTip**_: if you're returning Personally Identifiable Information
 > in your enrichment callbacks, don't forget to mention it in your
 > privacy policy :)
+
+You can also enrich manually-reported errors:
+
+```ts
+const exampleRoute = (req, res) => {
+  const error = new Error('Error from a route')
+  // Add extra data to the error
+  server.sentry.report(error, req, {
+    tags: {
+      projectID: req.params.projectID
+    },
+    context: {
+      performance: 42
+    }
+  })
+}
+```
 
 #### Sentry Releases
 

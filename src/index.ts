@@ -143,7 +143,19 @@ export function createServer<S extends Server>(
   return server
 }
 
-export async function startServer<S extends Server>(server: S, port: number) {
+/**
+ * Wait for the server to be ready and start listening.
+ *
+ * The server is ready when all async plugins have finished loading.
+ *
+ * @param server - An instance of Fastify
+ * @param port - Optional, the port to listen to.
+ *               Defaults to the value of the PORT environment variable.
+ */
+export async function startServer<S extends Server>(
+  server: S,
+  port: number = parseInt(process.env.PORT!)
+) {
   await server.ready()
   return await new Promise<S>(resolve => {
     server.listen({ port, host: '0.0.0.0' }, (error, address) => {
