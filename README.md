@@ -128,8 +128,8 @@ environment variables:
 | `INSTANCE_ID` | `instance` | An identifier for the machine that runs your application |
 | `COMMIT_ID`   | `commit`   | The git SHA-1 of your code                               |
 
-> _**Note**_: for `INSTANCE_ID` and `COMMIT_ID`, only the first 8
-> characters will be logged and sent to Sentry.
+> _**Note**_: for both `INSTANCE_ID` and `COMMIT_ID`, only the first 8
+> characters will be logged or sent to Sentry.
 
 #### Request ID
 
