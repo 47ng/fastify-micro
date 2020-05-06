@@ -2289,6 +2289,13 @@ fastify-plugin@^1.5.0, fastify-plugin@^1.6.1:
   dependencies:
     semver "^6.3.0"
 
+fastify-plugin@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-2.0.0.tgz#e1ac8fa0b4a9c65b83f40fc7f6a60f5ac6776326"
+  integrity sha512-5c7xwArjeY5T7PFw+TM66gz7E6mQpEK4PXKXVOmxLXUYh49D34pLAL+gbSRLgr7gg8fTOaNjB9fSj0adV5rrXg==
+  dependencies:
+    semver "^7.3.2"
+
 fastify-sensible@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/fastify-sensible/-/fastify-sensible-2.1.1.tgz#6f93308934fee156244cb98270b20eddb4db2c81"
@@ -4959,6 +4966,11 @@ semver@6.3.0, semver@6.x, semver@^6.0.0, semver@^6.2.0, semver@^6.3.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
   integrity sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
 
+semver@^7.3.2:
+  version "7.3.2"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.3.2.tgz#604962b052b81ed0786aae84389ffba70ffd3938"
+  integrity sha512-OrOb32TeeambH6UrhtShmF7CRDqhL6/5XpPNp2DuRH6+9QLw/orhp72j87v8Qa1ScDkvrrBNpZcDejAirJmfXQ==
+
 send@0.17.1:
   version "0.17.1"
   resolved "https://registry.yarnpkg.com/send/-/send-0.17.1.tgz#c1d8b059f7900f7466dd4938bdc44e11ddb376c8"
@@ -5641,12 +5653,12 @@ undefsafe@^2.0.2:
   dependencies:
     debug "^2.2.0"
 
-under-pressure@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/under-pressure/-/under-pressure-3.2.1.tgz#44cfe0c9a1991c17c62bd0a2824066dc2a45a357"
-  integrity sha512-IWR3AgjskkHukFB3AZM9odR1KLLh4/u0Ssc5BU1QJOd73023F1AIRjhIgkqr4upAWTxopX/3C02N5VpGoW7E3g==
+under-pressure@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/under-pressure/-/under-pressure-5.0.0.tgz#209498dae3c263d4b4940ac9c52da08a32e911b7"
+  integrity sha512-/R71MEyQvhF8BlBrWn/OAZbBe7uRwKN0pU5j+/TzzGmkN7GK7pCSrl/ZSthY22wsMAzuo0+3Qgxwv+0t/diwwA==
   dependencies:
-    fastify-plugin "^1.5.0"
+    fastify-plugin "^2.0.0"
 
 union-value@^1.0.0:
   version "1.0.1"
