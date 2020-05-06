@@ -28,7 +28,6 @@ export interface SentryReporter {
 }
 
 export interface SentryOptions<S extends Server> extends Sentry.NodeOptions {
-  release?: string
   getUser?: <R extends FastifyRequest>(
     server: S,
     req: R
