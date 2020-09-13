@@ -2293,6 +2293,13 @@ fastify-plugin@^1.5.0, fastify-plugin@^1.6.1:
   dependencies:
     semver "^6.3.0"
 
+fastify-plugin@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-2.3.3.tgz#795ad6d00ffb08d5c0af51edecd25dee4c668b42"
+  integrity sha512-KjVwrTlbOGBLhF80tAYQ8qXQKvc1G7ETlFZbU4n19V1Xoo9BRNQgicv36y9AvPDcIn1hpeHDOdpPkMW02NOVIQ==
+  dependencies:
+    semver "^7.3.2"
+
 fastify-sensible@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/fastify-sensible/-/fastify-sensible-2.1.1.tgz#6f93308934fee156244cb98270b20eddb4db2c81"
