@@ -44,7 +44,7 @@
     "under-pressure": "^4.0.0"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^9.0.1",
+    "@commitlint/config-conventional": "^11.0.0",
     "@types/jest": "^26.0.0",
     "@types/node": "^14.0.1",
     "@types/pino": "^6.0.0",
