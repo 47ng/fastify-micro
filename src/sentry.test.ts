@@ -219,7 +219,7 @@ describe('Sentry reporting', () => {
         transport: sentryTransport
       }
     })
-    server.post(
+    server.post<{ Body: { name: string } }>(
       '/',
       {
         schema: {

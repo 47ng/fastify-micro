@@ -1,4 +1,4 @@
-import { FastifyRequest, FastifyError } from 'fastify'
+import { FastifyPluginCallback, FastifyRequest, FastifyError } from 'fastify'
 import fp from 'fastify-plugin'
 import * as Sentry from '@sentry/node'
 import { Server } from './index'
@@ -128,4 +128,7 @@ function sentryPlugin(
   next()
 }
 
-export default fp(sentryPlugin as any)
+export default fp(
+  sentryPlugin as FastifyPluginCallback<SentryOptions<Server>>,
+  { fastify: '3.x', name: 'fastify-micro:sentry' }
+)

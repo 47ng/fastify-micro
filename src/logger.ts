@@ -1,10 +1,10 @@
-import { IncomingMessage, ServerResponse } from 'http'
+import { IncomingMessage } from 'http'
 import crypto from 'crypto'
 import pino from 'pino'
 import SonicBoom from 'sonic-boom'
 import redactEnv from 'redact-env'
 import { nanoid } from 'nanoid'
-import { FastifyRequest } from 'fastify'
+import { FastifyLoggerOptions } from 'fastify'
 
 function createRedactedStream(
   pipeTo: SonicBoom,
@@ -19,7 +19,10 @@ function createRedactedStream(
   })
 }
 
-export function getLoggerOptions(appName?: string, secureEnv: string[] = []) {
+export function getLoggerOptions(
+  appName?: string,
+  secureEnv: string[] = []
+): FastifyLoggerOptions & pino.LoggerOptions & { stream: any } {
   return {
     level:
       process.env.LOG_LEVEL ||
@@ -42,16 +45,14 @@ export function getLoggerOptions(appName?: string, secureEnv: string[] = []) {
       commit: process.env.COMMIT_ID?.slice(0, 8)
     },
     serializers: {
-      req(req: FastifyRequest & IncomingMessage) {
+      req(req) {
         return {
           method: req.method,
           url: req.url,
-          headers: req.headers,
-          hostname: req.hostname,
-          ip: req.ip
+          headers: req.headers
         }
       },
-      res(res: ServerResponse) {
+      res(res) {
         // Response has already be sent at time of logging,
         // so we need to parse the headers to log them.
         // Trying to collect them earlier to show them here

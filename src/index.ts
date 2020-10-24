@@ -1,10 +1,10 @@
 import checkEnv from '@47ng/check-env'
-import Fastify, { FastifyInstance, ServerOptions } from 'fastify'
+import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
 import autoLoad from 'fastify-autoload'
 import sensible from 'fastify-sensible'
 // @ts-ignore
 import gracefulShutdown from 'fastify-graceful-shutdown'
-import underPressurePlugin, { UnderPressureOptions } from 'under-pressure'
+import underPressurePlugin from 'under-pressure'
 import { getLoggerOptions, makeReqIdGenerator } from './logger'
 import sentry, { SentryReporter, SentryOptions } from './sentry'
 
@@ -13,7 +13,7 @@ export type Server = FastifyInstance & {
   sentry: SentryReporter
 }
 
-export type Options<S extends Server> = ServerOptions & {
+export type Options<S extends Server> = FastifyServerOptions & {
   /**
    * The name of your service.
    *
@@ -43,7 +43,10 @@ export type Options<S extends Server> = ServerOptions & {
   /**
    * Add custom options for under-pressure
    */
-  underPressure?: Omit<UnderPressureOptions, 'healthCheck'> & {
+  underPressure?: Omit<
+    underPressurePlugin.UnderPressureOptions,
+    'healthCheck'
+  > & {
     healthCheck: (server: S) => Promise<boolean>
   }
 
@@ -74,19 +77,19 @@ export function createServer<S extends Server>(
 ): S {
   checkEnv({ required: ['NODE_ENV'] })
 
-  const server = Fastify({
+  const server = (Fastify({
     logger: getLoggerOptions(options.name, options.redactEnv),
     // todo: Fix type when switching to Fastify 3.x
     genReqId: makeReqIdGenerator() as any,
     trustProxy: process.env.TRUSTED_PROXY_IPS,
     ...options
-  }) as S
+  }) as unknown) as S
   if (options.name) {
     server.decorate('name', options.name)
   }
 
   server.register(sensible)
-  server.register(sentry, options.sentry)
+  server.register(sentry, options.sentry as any)
 
   // Disable graceful shutdown if signal listeners are already in use
   // (eg: using Clinic.js or other kinds of wrapping utilities)
@@ -110,8 +113,7 @@ export function createServer<S extends Server>(
 
   if (options.routesDir) {
     server.register(autoLoad, {
-      dir: options.routesDir,
-      includeTypeScript: true
+      dir: options.routesDir
     })
   }
 
