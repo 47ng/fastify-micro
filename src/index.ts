@@ -2,6 +2,7 @@ import checkEnv from '@47ng/check-env'
 import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
 import autoLoad from 'fastify-autoload'
 import sensible from 'fastify-sensible'
+import 'fastify-sensible'
 // @ts-ignore
 import gracefulShutdown from 'fastify-graceful-shutdown'
 import underPressurePlugin from 'under-pressure'
