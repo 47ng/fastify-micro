@@ -5676,12 +5676,12 @@ undefsafe@^2.0.3:
     debug "^2.2.0"
 
 under-pressure@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/under-pressure/-/under-pressure-5.2.0.tgz#cdb77e51a539e85e267d1d88b20c8755fd1970a7"
-  integrity sha512-gx1bVtt1M3AuLIZD7NKusmSHfm/HpNkenKk8ZIDWjV1RIxB5Ixt5XR4jWfkx2aLIXy5a2TcqUdt3h9duycYzOA==
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/under-pressure/-/under-pressure-5.3.0.tgz#646725e81e5eaaac772d3b907a94b2a699f6d8cc"
+  integrity sha512-8mf2ZDXJ1qzA2KzqdXtwUm2DjlutT51xBspB3JWyQdJSv5KdCbAuRCO4XBTH3voOlC0n/UZPGVzU/Z3++kBYkg==
   dependencies:
     fastify-error "^0.2.0"
-    fastify-plugin "^2.0.0"
+    fastify-plugin "^3.0.0"
 
 union-value@^1.0.0:
   version "1.0.1"
