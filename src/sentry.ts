@@ -106,9 +106,9 @@ function sentryPlugin(
       (error.statusCode && error.statusCode >= 400 && error.statusCode < 500) ||
       error.validation
     ) {
-      req.log.warn(error)
+      req.log.warn({ err: error })
     } else {
-      req.log.error(error)
+      req.log.error({ err: error })
     }
 
     if (error.validation) {
