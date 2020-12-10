@@ -69,11 +69,25 @@ export type Options<S extends Server> = FastifyServerOptions & {
    * Pass `false` to disable (it is disabled by default).
    */
   routesDir?: string | false
+
+  /**
+   * Print routes after server has loaded
+   *
+   * By default, loaded routes are only printed in the console in
+   * development, for debugging purposes.
+   * You can use the following values:
+   * - `auto` (default): `console` in development, silent in production.
+   * - `console`: always pretty-print routes using `console.info` (for humans)
+   * - `logger`: always print as NDJSON as part of the app log stream (info level)
+   * - false: disable route logging
+   */
+  printRoutes?: 'auto' | 'console' | 'logger' | false
 }
 
 export function createServer<S extends Server>(
   options: Options<S> = {
-    routesDir: false
+    routesDir: false,
+    printRoutes: 'auto'
   }
 ): S {
   checkEnv({ required: ['NODE_ENV'] })
@@ -139,8 +153,26 @@ export function createServer<S extends Server>(
     ...underPressureOptions
   })
 
-  if (process.env.NODE_ENV === 'development') {
-    server.ready(() => console.info(server.printRoutes()))
+  if (options.printRoutes !== false) {
+    switch (options.printRoutes || 'auto') {
+      default:
+      case 'auto':
+        if (process.env.NODE_ENV === 'development') {
+          server.ready(() => console.info(server.printRoutes()))
+        }
+        break
+      case 'console':
+        server.ready(() => console.info(server.printRoutes()))
+        break
+      case 'logger':
+        server.ready(() =>
+          server.log.info({
+            msg: 'Routes loaded',
+            routes: server.printRoutes()
+          })
+        )
+        break
+    }
   }
 
   return server
