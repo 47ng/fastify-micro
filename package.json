@@ -3,6 +3,7 @@
   "version": "0.0.0-semantically-released",
   "description": "Opinionated Node.js microservices framework built on fastify",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "author": {
     "name": "François Best",
