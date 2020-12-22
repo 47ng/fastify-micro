@@ -4722,9 +4722,9 @@ readdirp@~3.2.0:
     picomatch "^2.0.4"
 
 redact-env@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/redact-env/-/redact-env-0.3.0.tgz#acd19366f5dccbdf3da68e5031d411337c286e50"
-  integrity sha512-zZ+i7R1ODNUC2HEL5iNQhGDWSCbiu9tPGHrWHe2dZUaGS0GZldfbLHOUHiVmjYW+UtsCRPgAmpejUsDt/t5h8Q==
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/redact-env/-/redact-env-0.3.1.tgz#4663358b65e63d6442cb5d4eefbea21471e5613c"
+  integrity sha512-aoTVNyk6Jgj07hk5p2NBShl6joAqefrb6MWCqdDbNky6UJzUc7KQb6v/E766A9rfCY35p1ybpM7/LpZNbXujXw==
   dependencies:
     escape-string-regexp "^4.0.0"
 
