@@ -341,6 +341,9 @@ createServer({
 > `under-pressure`: here the server is passed as an argument for
 > convenience.
 
+If for some reason you wish to disable service health monitoring, you can set
+the `FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING` environment variable to `true`.
+
 ### Auto-loading routes and plugins from the filesystem
 
 Routes and plugins can be loaded from the filesystem using

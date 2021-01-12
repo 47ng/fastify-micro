@@ -132,26 +132,28 @@ export function createServer<S extends Server>(
     })
   }
 
-  const { healthCheck, ...underPressureOptions } = options.underPressure || {}
-  server.register(underPressurePlugin, {
-    maxEventLoopDelay: 1000, // 1s
-    // maxHeapUsedBytes: 100 * (1 << 20), // 100 MiB
-    // maxRssBytes: 100 * (1 << 20), // 100 MiB
-    healthCheckInterval: 5000, // 5 seconds
-    exposeStatusRoute: {
-      url: '/_health',
-      routeOpts: {
-        logLevel: 'warn'
-      }
-    },
-    healthCheck: async () => {
-      if (healthCheck) {
-        return await healthCheck(server)
-      }
-      return true
-    },
-    ...underPressureOptions
-  })
+  if (process.env.FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING !== 'true') {
+    const { healthCheck, ...underPressureOptions } = options.underPressure || {}
+    server.register(underPressurePlugin, {
+      maxEventLoopDelay: 1000, // 1s
+      // maxHeapUsedBytes: 100 * (1 << 20), // 100 MiB
+      // maxRssBytes: 100 * (1 << 20), // 100 MiB
+      healthCheckInterval: 5000, // 5 seconds
+      exposeStatusRoute: {
+        url: '/_health',
+        routeOpts: {
+          logLevel: 'warn'
+        }
+      },
+      healthCheck: async () => {
+        if (healthCheck) {
+          return await healthCheck(server)
+        }
+        return true
+      },
+      ...underPressureOptions
+    })
+  }
 
   if (options.printRoutes !== false) {
     switch (options.printRoutes || 'auto') {
