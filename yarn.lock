@@ -2281,19 +2281,12 @@ fastify-error@^0.3.0:
   integrity sha512-Jm2LMTB5rsJqlS1+cmgqqM9tTs0UrlgYR7TvDT3ZgXsUI5ib1NjQlqZHf+tDK5tVPdFGwyq02wAoJtyYIRSiFA==
 
 fastify-graceful-shutdown@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/fastify-graceful-shutdown/-/fastify-graceful-shutdown-3.0.0.tgz#8c05d7b31875bcf7ae9ecc0b6a67e7aa848775a0"
-  integrity sha512-LR9UiPA0IeTmQZQyrIJwRxJubXp++PM91s4b3ryHhA26VyBz/ib7At3QXlAWS7vPRHW35x71Y2K4iNIVTZ3AFg==
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/fastify-graceful-shutdown/-/fastify-graceful-shutdown-3.1.0.tgz#5620a3ee05a7d4694c3de234b380e445f46db3f8"
+  integrity sha512-5l3EAxYb99xb3NZkdoZwHgMjmyIlRHZaZNEc/U4CCpgosN2Obh7D3a7wjHfNhRtWfddXYkNuZ+KmUhW5SnAKgA==
   dependencies:
-    fastify-plugin "^2.0.0"
-    fastparallel "^2.3.0"
-
-fastify-plugin@^2.0.0:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-2.3.4.tgz#b17abdc36a97877d88101fb86ad8a07f2c07de87"
-  integrity sha512-I+Oaj6p9oiRozbam30sh39BiuiqBda7yK2nmSPVwDCfIBlKnT8YB3MY+pRQc2Fcd07bf6KPGklHJaQ2Qu81TYQ==
-  dependencies:
-    semver "^7.3.2"
+    fastify-plugin "^3.0.0"
+    fastparallel "^2.4.0"
 
 fastify-plugin@^3.0.0:
   version "3.0.0"
@@ -2339,13 +2332,13 @@ fastify@^3.7.0:
     semver "^7.3.2"
     tiny-lru "^7.0.0"
 
-fastparallel@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/fastparallel/-/fastparallel-2.3.0.tgz#1e709bfb6a03993f3857e3ce7f01311ce7602613"
-  integrity sha1-HnCb+2oDmT84V+POfwExHOdgJhM=
+fastparallel@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/fastparallel/-/fastparallel-2.4.0.tgz#65fbec1a5e5902494be772cf5765cbaaece08688"
+  integrity sha512-sacwQ7wwKlQXsa7TN24UvMBLZNLmVcPhmxccC9riFqb3N+fSczJL8eWdnZodZ/KijGVgNBBfvF/NeXER08uXnQ==
   dependencies:
-    reusify "^1.0.0"
-    xtend "^4.0.1"
+    reusify "^1.0.4"
+    xtend "^4.0.2"
 
 fastq@^1.6.1:
   version "1.8.0"
@@ -4893,7 +4886,7 @@ ret@~0.2.0:
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.2.2.tgz#b6861782a1f4762dce43402a71eb7a283f44573c"
   integrity sha512-M0b3YWQs7R3Z917WRQy1HHA7Ba7D8hvZg6UE5mLykJxQVE2ju0IXbGlaHPPlkY+WN7wFP+wUMXmBFA0aV6vYGQ==
 
-reusify@^1.0.0, reusify@^1.0.4:
+reusify@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/reusify/-/reusify-1.0.4.tgz#90da382b1e126efc02146e90845a88db12925d76"
   integrity sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==
@@ -5953,7 +5946,7 @@ xmlchars@^2.2.0:
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
 
-xtend@^4.0.1, xtend@~4.0.1:
+xtend@^4.0.2, xtend@~4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
