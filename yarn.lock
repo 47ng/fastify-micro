@@ -2270,11 +2270,6 @@ fastify-autoload@^3.3.0:
     pkg-up "^3.1.0"
     semver "^7.3.2"
 
-fastify-error@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/fastify-error/-/fastify-error-0.2.0.tgz#9a1c28d4f42b6259e7a549671c8e5e2d85660634"
-  integrity sha512-zabxsBatj59ROG0fhP36zNdc5Q1/eYeH9oSF9uvfrurZf8/JKfrJbMcIGrLpLWcf89rS6L91RHWm20A/X85hcA==
-
 fastify-error@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/fastify-error/-/fastify-error-0.3.0.tgz#08866323d521156375a8be7c7fcaf98df946fafb"
@@ -5673,11 +5668,11 @@ undefsafe@^2.0.3:
     debug "^2.2.0"
 
 under-pressure@^5.2.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/under-pressure/-/under-pressure-5.4.0.tgz#1660d06da79b2726607a32f7be6fbd3eb41a973f"
-  integrity sha512-ppVQMNT876JwTMMfb7vnWmos07JjjjETB9TqKifbmdS0fgKBZxtGMLMbNPySF5eya+rb75toRo4KkR4SXC1cKw==
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/under-pressure/-/under-pressure-5.6.0.tgz#a567cb034cfecc1d1ace18b1a3bd170c471b9f2c"
+  integrity sha512-bs6ylFUxmdyi42Ruh705FLGcxe4UdDLWuD+ihbgt4iznRKW9iMgJ/jF5x6O5UzGy4WOsyNDPJCESiIvNBUTzog==
   dependencies:
-    fastify-error "^0.2.0"
+    fastify-error "^0.3.0"
     fastify-plugin "^3.0.0"
 
 union-value@^1.0.0:
