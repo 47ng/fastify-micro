@@ -47,7 +47,7 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",
     "@types/jest": "^26.0.15",
-    "@types/node": "^14.14.2",
+    "@types/node": "^16.10.3",
     "@types/pino": "6.3.5",
     "@types/sonic-boom": "^0.7.0",
     "commitlint": "^11.0.0",
