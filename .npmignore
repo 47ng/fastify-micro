@@ -1,3 +1,4 @@
+tests/**
 **/*.test.ts
 tsconfig.json
 .env
