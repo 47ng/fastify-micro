@@ -1,20 +1,22 @@
 import checkEnv from '@47ng/check-env'
 import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
 import autoLoad from 'fastify-autoload'
-import sensible from 'fastify-sensible'
-import 'fastify-sensible'
 // @ts-ignore
 import gracefulShutdown from 'fastify-graceful-shutdown'
+import 'fastify-sensible'
+import sensible from 'fastify-sensible'
 import underPressurePlugin from 'under-pressure'
 import { getLoggerOptions, makeReqIdGenerator } from './logger'
-import sentry, { SentryReporter, SentryOptions } from './sentry'
+import sentry, { SentryDecoration, SentryOptions } from './sentry'
 
-export type Server = FastifyInstance & {
-  name?: string
-  sentry: SentryReporter
+declare module 'fastify' {
+  interface FastifyInstance {
+    name?: string
+    sentry: SentryDecoration
+  }
 }
 
-export type Options<S extends Server> = FastifyServerOptions & {
+export type Options = FastifyServerOptions & {
   /**
    * The name of your service.
    *
@@ -39,7 +41,7 @@ export type Options<S extends Server> = FastifyServerOptions & {
    * This is where we recommend registering interfaces
    * to your service's data stores.
    */
-  configure?: (server: S) => void
+  configure?: (server: FastifyInstance) => void
 
   /**
    * Add custom options for under-pressure
@@ -48,7 +50,7 @@ export type Options<S extends Server> = FastifyServerOptions & {
     underPressurePlugin.UnderPressureOptions,
     'healthCheck'
   > & {
-    healthCheck: (server: S) => Promise<boolean>
+    healthCheck: (server: FastifyInstance) => Promise<boolean>
   }
 
   /**
@@ -57,7 +59,7 @@ export type Options<S extends Server> = FastifyServerOptions & {
    * To enable Sentry, set the SENTRY_DSN environment variable to the
    * DSN (found in your project settings).
    */
-  sentry?: SentryOptions<S>
+  sentry?: SentryOptions
 
   /**
    * Path to a directory where to load routes.
@@ -84,21 +86,21 @@ export type Options<S extends Server> = FastifyServerOptions & {
   printRoutes?: 'auto' | 'console' | 'logger' | false
 }
 
-export function createServer<S extends Server>(
-  options: Options<S> = {
+export function createServer(
+  options: Options = {
     routesDir: false,
     printRoutes: 'auto'
   }
-): S {
+) {
   checkEnv({ required: ['NODE_ENV'] })
 
-  const server = (Fastify({
+  const server = Fastify({
     logger: getLoggerOptions(options.name, options.redactEnv),
     // todo: Fix type when switching to Fastify 3.x
     genReqId: makeReqIdGenerator() as any,
     trustProxy: process.env.TRUSTED_PROXY_IPS,
     ...options
-  }) as unknown) as S
+  })
   if (options.name) {
     server.decorate('name', options.name)
   }
@@ -195,7 +197,7 @@ export async function startServer(
   port: number = parseInt(process.env.PORT || '3000') || 3000
 ) {
   await server.ready()
-  return await new Promise<S>(resolve => {
+  return await new Promise(resolve => {
     server.listen({ port, host: '0.0.0.0' }, (error, address) => {
       if (error) {
         server.log.fatal({ msg: `Application startup error`, error, address })
