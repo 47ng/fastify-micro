@@ -46,12 +46,7 @@ export type Options = FastifyServerOptions & {
   /**
    * Add custom options for under-pressure
    */
-  underPressure?: Omit<
-    underPressurePlugin.UnderPressureOptions,
-    'healthCheck'
-  > & {
-    healthCheck: (server: FastifyInstance) => Promise<boolean>
-  }
+  underPressure?: underPressurePlugin.UnderPressureOptions
 
   /**
    * Add custom options for Sentry
@@ -135,7 +130,7 @@ export function createServer(
   }
 
   if (process.env.FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING !== 'true') {
-    const { healthCheck, ...underPressureOptions } = options.underPressure || {}
+    const underPressureOptions = options.underPressure || {}
     server.register(underPressurePlugin, {
       maxEventLoopDelay: 1000, // 1s
       // maxHeapUsedBytes: 100 * (1 << 20), // 100 MiB
@@ -146,12 +141,6 @@ export function createServer(
         routeOpts: {
           logLevel: 'warn'
         }
-      },
-      healthCheck: async () => {
-        if (healthCheck) {
-          return await healthCheck(server)
-        }
-        return true
       },
       ...underPressureOptions
     })

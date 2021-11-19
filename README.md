@@ -353,11 +353,14 @@ key in the server options:
 ```ts
 createServer({
   underPressure: {
-    // Custom health check for testing attached services health:
+    // Custom health check for testing attached services' health:
     healthCheck: async server => {
       try {
-        await server.db.checkConnection()
-        return true
+        const databaseOk = Boolean(await server.db.checkConnection())
+        // Returned data will show up in the endpoint's response:
+        return {
+          databaseOk
+        }
       } catch (error) {
         server.sentry.report(error)
         return false
@@ -369,10 +372,6 @@ createServer({
   }
 })
 ```
-
-> _**Note**_: the type for the `healthCheck` property differs from
-> `under-pressure`: here the server is passed as an argument for
-> convenience.
 
 If for some reason you wish to disable service health monitoring, you can set
 the `FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING` environment variable to `true`.
