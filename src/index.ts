@@ -187,11 +187,12 @@ export function createServer<S extends Server>(
  *
  * @param server - An instance of Fastify
  * @param port - Optional, the port to listen to.
- *               Defaults to the value of the PORT environment variable.
+ *               Defaults to the value of the PORT environment variable,
+ *               or 3000 if not specified in the environment either.
  */
-export async function startServer<S extends Server>(
-  server: S,
-  port: number = parseInt(process.env.PORT!)
+export async function startServer(
+  server: FastifyInstance,
+  port: number = parseInt(process.env.PORT || '3000') || 3000
 ) {
   await server.ready()
   return await new Promise<S>(resolve => {
