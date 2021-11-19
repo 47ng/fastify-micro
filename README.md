@@ -211,7 +211,7 @@ Sentry will receive any unhandled errors (5xx) thrown by your
 application. 4xx errors are considered "handled" errors and will not be
 reported.
 
-You can manually report an error:
+You can manually report an error, at the server or request level:
 
 ```ts
 // Anywhere you have access to the server object:
@@ -221,8 +221,8 @@ server.sentry.report(error)
 // In a route:
 const exampleRoute = (req, res) => {
   const error = new Error('Error from a route')
-  // Add request context to the error
-  server.sentry.report(error, req)
+  // This will add request context to the error:
+  req.sentry.report(error)
 }
 ```
 
@@ -272,13 +272,36 @@ You can also enrich manually-reported errors:
 const exampleRoute = (req, res) => {
   const error = new Error('Error from a route')
   // Add extra data to the error
-  server.sentry.report(error, req, {
+  req.sentry.report(error, {
     tags: {
       projectID: req.params.projectID
     },
     context: {
       performance: 42
     }
+  })
+}
+```
+
+#### Note: v2 to v3 migration
+
+in versions <= 2.x.x, the request object was passed as the second argument to the `report` function.
+
+To migrate to version 3.x.x, you can remove this argument and use the `sentry`
+decoration on the request instead:
+
+```ts
+const exampleRoute = (req, res) => {
+  const error = new Error('Error from a route')
+
+  // version 2.x.x
+  server.sentry.report(error, req, {
+    // Extra context
+  })
+
+  // version 3.x.x
+  req.sentry.report(error, {
+    // Extra context
   })
 }
 ```

@@ -1,7 +1,17 @@
-import { FastifyPluginCallback, FastifyRequest, FastifyError } from 'fastify'
-import fp from 'fastify-plugin'
 import * as Sentry from '@sentry/node'
-import { Server } from './index'
+import {
+  FastifyError,
+  FastifyInstance,
+  FastifyPluginCallback,
+  FastifyRequest
+} from 'fastify'
+import fp from 'fastify-plugin'
+
+declare module 'fastify' {
+  interface FastifyRequest {
+    sentry: SentryDecoration
+  }
+}
 
 export interface SentryExtra {
   /**
@@ -19,21 +29,22 @@ export interface SentryExtra {
   }
 }
 
-export interface SentryReporter {
-  report: <R extends FastifyRequest>(
-    error: Error,
-    req?: R,
-    extra?: Partial<SentryExtra>
-  ) => Promise<void>
+export type SentryReportFn = (
+  error: Error,
+  extra?: Partial<SentryExtra>
+) => Promise<void>
+
+export interface SentryDecoration {
+  report: SentryReportFn
 }
 
-export interface SentryOptions<S extends Server> extends Sentry.NodeOptions {
+export interface SentryOptions extends Sentry.NodeOptions {
   getUser?: <R extends FastifyRequest>(
-    server: S,
+    server: FastifyInstance,
     req: R
   ) => Promise<Sentry.User>
   getExtra?: <R extends FastifyRequest>(
-    server: S,
+    server: FastifyInstance,
     req?: R
   ) => Promise<Partial<SentryExtra>>
 }
@@ -41,8 +52,8 @@ export interface SentryOptions<S extends Server> extends Sentry.NodeOptions {
 // --
 
 function sentryPlugin(
-  server: Server,
-  options: SentryOptions<Server>,
+  server: FastifyInstance,
+  options: SentryOptions,
   next: (err?: FastifyError) => void
 ) {
   Sentry.init({
@@ -53,8 +64,8 @@ function sentryPlugin(
     ...options
   })
 
-  const reporter: SentryReporter = {
-    async report(error, req, extra = {}) {
+  const makeDecoration = (req?: FastifyRequest): SentryDecoration => ({
+    async report(error, extra = {}) {
       let user: Sentry.User | undefined
       if (options.getUser && req) {
         try {
@@ -97,9 +108,14 @@ function sentryPlugin(
         Sentry.captureException(error)
       })
     }
-  }
+  })
 
-  server.decorate('sentry', reporter)
+  server.decorate('sentry', makeDecoration())
+  // https://www.fastify.io/docs/latest/Decorators/#decoraterequest
+  server.decorateRequest('sentry', null)
+  server.addHook('onRequest', async req => {
+    req.sentry = makeDecoration(req)
+  })
 
   server.setErrorHandler(async (error, req, res) => {
     if (
@@ -120,7 +136,7 @@ function sentryPlugin(
     }
 
     // Report the error to Sentry
-    await (server as Server).sentry.report(error, req)
+    await req.sentry.report(error)
 
     // Pass to the generic error handler (500)
     return res.send(error)
@@ -128,7 +144,7 @@ function sentryPlugin(
   next()
 }
 
-export default fp(
-  sentryPlugin as FastifyPluginCallback<SentryOptions<Server>>,
-  { fastify: '3.x', name: 'fastify-micro:sentry' }
-)
+export default fp(sentryPlugin as FastifyPluginCallback<SentryOptions>, {
+  fastify: '3.x',
+  name: 'fastify-micro:sentry'
+})
