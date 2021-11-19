@@ -14,7 +14,7 @@ describe('Health checks', () => {
   })
 
   test('Custom health check handler is called at startup and every 5 seconds', async () => {
-    jest.useFakeTimers()
+    jest.useFakeTimers('legacy')
     const healthCheck = jest.fn().mockResolvedValue(true)
     const server = createServer({
       underPressure: {
@@ -29,7 +29,7 @@ describe('Health checks', () => {
   })
 
   test('Custom health check throwing results in 503', async () => {
-    jest.useFakeTimers()
+    jest.useFakeTimers('legacy')
     const healthCheck = jest
       .fn()
       .mockResolvedValueOnce(true) // First call passes (setup)
@@ -64,7 +64,7 @@ describe('Health checks', () => {
 
   test('Disabled health monitoring', async () => {
     process.env.FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING = 'true'
-    jest.useFakeTimers()
+    jest.useFakeTimers('legacy')
     const healthCheck = jest.fn().mockResolvedValue(true)
     const server = createServer({
       underPressure: {
