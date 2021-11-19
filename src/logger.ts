@@ -1,10 +1,10 @@
-import { IncomingMessage } from 'http'
 import crypto from 'crypto'
-import pino from 'pino'
-import SonicBoom from 'sonic-boom'
-import redactEnv from 'redact-env'
-import { nanoid } from 'nanoid'
 import { FastifyLoggerOptions } from 'fastify'
+import { IncomingMessage } from 'http'
+import { nanoid } from 'nanoid'
+import pino from 'pino'
+import redactEnv from 'redact-env'
+import SonicBoom from 'sonic-boom'
 
 function createRedactedStream(
   pipeTo: SonicBoom,
@@ -65,10 +65,7 @@ export function getLoggerOptions(
           .reduce((obj, header: string) => {
             try {
               const [name, ...rest] = header.split(': ')
-              if (
-                name === '' ||
-                ['date', 'connection'].includes(name.toLowerCase())
-              ) {
+              if (['', 'date', 'connection'].includes(name.toLowerCase())) {
                 return obj // Ignore those
               }
               const value =
