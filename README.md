@@ -46,7 +46,14 @@ are available in the [`.env.example`](./.env.example) file.
 ### Listening port
 
 You can provide the port number where the server will be listening as
-the second argument of `startServer`.
+the second argument of `startServer`:
+
+```ts
+import { createServer, startServer } from 'fastify-micro'
+
+const server = createServer()
+startServer(server, 3000)
+```
 
 If omitted, the port number will be read from the `PORT` environment
 variable:
@@ -61,6 +68,9 @@ startServer(server)
 
 // Server started on 0.0.0.0:4000
 ```
+
+If no value is specified either via code or environment, the default port will
+be 3000.
 
 ### Logging
 
