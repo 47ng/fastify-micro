@@ -28,6 +28,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["./src/**/*.test.ts", "./dist", "./node_modules"]
+  "include": ["./src/**/*.ts", "src/sentry.test.ts"],
+  "exclude": ["./tests/**/*.test.ts", "./dist", "./node_modules"]
 }
