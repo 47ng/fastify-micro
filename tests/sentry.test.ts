@@ -1,6 +1,6 @@
-import { createServer } from './index'
 import sentryTestkit from 'sentry-testkit'
 import waitForExpect from 'wait-for-expect'
+import { createServer } from '../src/index'
 
 describe('Sentry reporting', () => {
   const OLD_ENV = process.env
@@ -85,6 +85,25 @@ describe('Sentry reporting', () => {
 
   // --
 
+  test('Sentry manual reports at app level', async () => {
+    const { testkit, sentryTransport } = sentryTestkit()
+    setupEnv()
+    const server = createServer({
+      sentry: {
+        transport: sentryTransport
+      }
+    })
+    await server.ready()
+    server.sentry.report(new Error('manual'))
+    await waitForExpect(() => {
+      expect(testkit.reports()).toHaveLength(1)
+    })
+    const report = testkit.reports()[0]
+    expect(report.error?.message).toEqual('manual')
+  })
+
+  // --
+
   test('Report enrichment in route', async () => {
     const { testkit, sentryTransport } = sentryTestkit()
     setupEnv()
@@ -94,7 +113,7 @@ describe('Sentry reporting', () => {
       }
     })
     server.get('/', async req => {
-      await server.sentry.report(new Error('crash'), req, {
+      await req.sentry.report(new Error('crash'), {
         tags: {
           foo: 'bar'
         },
@@ -176,7 +195,7 @@ describe('Sentry reporting', () => {
       }
     })
     server.get('/', async req => {
-      await server.sentry.report(new Error('crash'), req)
+      await req.sentry.report(new Error('crash'))
       return 'foo'
     })
     await server.ready()
