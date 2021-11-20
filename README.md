@@ -100,7 +100,22 @@ createServer({
 })
 ```
 
-Some security headers will also be redacted:
+You can also redact log fields by passing [Pino redact paths](https://getpino.io/#/docs/redaction)
+to the `redactLogPaths` option:
+
+```ts
+createServer({
+  // The values of these headers
+  // will be redacted in the logs:
+  redactLogPaths: [
+    'req.headers["x-myapp-client-secret"]',
+    'res.headers["x-myapp-server-secret"]'
+    // etc...
+  ]
+})
+```
+
+The following security headers will be redacted by default:
 
 - Request headers:
   - `Cookie`
@@ -109,8 +124,6 @@ Some security headers will also be redacted:
   - `X-CSRF-Token`
 - Response headers:
   - `Set-Cookie`
-
-> _todo: Propose a strategy to inject custom redacted fields_
 
 #### Environment Context
 

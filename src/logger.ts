@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid'
 import pino from 'pino'
 import redactEnv from 'redact-env'
 import SonicBoom from 'sonic-boom'
+import type { Options } from './index'
 
 function createRedactedStream(
   pipeTo: SonicBoom,
@@ -19,10 +20,11 @@ function createRedactedStream(
   })
 }
 
-export function getLoggerOptions(
-  appName?: string,
-  secureEnv: string[] = []
-): FastifyLoggerOptions & pino.LoggerOptions & { stream: any } {
+export function getLoggerOptions({
+  name,
+  redactEnv = [],
+  redactLogPaths = []
+}: Options): FastifyLoggerOptions & pino.LoggerOptions & { stream: any } {
   return {
     level:
       process.env.LOG_LEVEL ||
@@ -33,14 +35,15 @@ export function getLoggerOptions(
       'req.headers["x-csrf-token"]',
       'req.headers.cookie',
       'req.headers.authorization',
-      'res.headers["set-cookie"]'
+      'res.headers["set-cookie"]',
+      ...redactLogPaths
     ],
     stream: createRedactedStream(pino.destination(1), [
       'SENTRY_DSN',
-      ...secureEnv
+      ...redactEnv
     ]),
     base: {
-      from: appName,
+      from: name,
       instance: process.env.INSTANCE_ID?.slice(0, 8),
       commit: process.env.COMMIT_ID?.slice(0, 8)
     },

@@ -33,6 +33,20 @@ export type Options = FastifyServerOptions & {
   redactEnv?: string[]
 
   /**
+   * To redact sensitive information, supply paths to log keys that hold sensitive data.
+   *
+   * The following headers are already redacted for security:
+   * - req.headers["x-secret-token"]
+   * - req.headers["x-csrf-token"]
+   * - req.headers.cookie
+   * - req.headers.authorization
+   * - res.headers["set-cookie"]
+   *
+   * See https://getpino.io/#/docs/redaction.
+   */
+  redactLogPaths?: string[]
+
+  /**
    * Add your own plugins in this callback.
    *
    * It's called after most built-in plugins have run,
@@ -90,7 +104,7 @@ export function createServer(
   checkEnv({ required: ['NODE_ENV'] })
 
   const server = Fastify({
-    logger: getLoggerOptions(options.name, options.redactEnv),
+    logger: getLoggerOptions(options),
     // todo: Fix type when switching to Fastify 3.x
     genReqId: makeReqIdGenerator() as any,
     trustProxy: process.env.TRUSTED_PROXY_IPS,
