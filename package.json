@@ -24,7 +24,6 @@
   "scripts": {
     "test": "jest --coverage --runInBand",
     "test:watch": "jest --watch --runInBand",
-    "dev": "nodemon -e ts,.env -w .env -w . -x 'run-s build:ts test'",
     "build:clean": "rm -rf ./dist",
     "build:ts": "tsc",
     "build": "run-s build:clean build:ts",
@@ -55,7 +54,6 @@
     "commitlint": "^15.0.0",
     "husky": "^7.0.0",
     "jest": "^27.3.1",
-    "nodemon": "^2.0.15",
     "npm-run-all": "^4.1.5",
     "sentry-testkit": "^3.3.7",
     "ts-jest": "^27.0.7",
