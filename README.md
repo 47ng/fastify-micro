@@ -1,3 +1,5 @@
+<div style="text-align:center;">
+
 # `fastify-micro`
 
 [![NPM](https://img.shields.io/npm/v/fastify-micro?color=red)](https://www.npmjs.com/package/fastify-micro)
@@ -5,7 +7,9 @@
 [![Continuous Integration](https://github.com/47ng/fastify-micro/workflows/Continuous%20Integration/badge.svg?branch=next)](https://github.com/47ng/fastify-micro/actions)
 [![Coverage Status](https://coveralls.io/repos/github/47ng/fastify-micro/badge.svg?branch=next)](https://coveralls.io/github/47ng/fastify-micro?branch=next)
 
-Opinionated Node.js microservices framework built on fastify
+Opinionated Node.js microservices framework built on [Fastify](https://fastify.io).
+
+</div>
 
 ## Features
 
@@ -26,7 +30,7 @@ $ npm i fastify-micro
 
 ## Usage
 
-Minimal example :
+Minimal example:
 
 ```ts
 import { createServer, startServer } from 'fastify-micro'
@@ -130,7 +134,7 @@ In case you want to perform log aggregation across your services, it can
 be useful to know who generated a log entry.
 
 For that, you can pass a `name` in the options. It will add a `from`
-field in the logs with that name :
+field in the logs with that name:
 
 ```ts
 const server = createServer({
@@ -276,7 +280,7 @@ createServer({
 
 > _**ProTip**_: if you're returning Personally Identifiable Information
 > in your enrichment callbacks, don't forget to mention it in your
-> privacy policy :)
+> privacy policy 🙂
 
 You can also enrich manually-reported errors:
 
@@ -421,8 +425,8 @@ The following plugins are loaded by default:
 
 ### Loading other plugins
 
-The server returned by `createServer` is a fastify instance, you can
-register any fastify-compatible plugin onto it, and use the full Fastify
+The server returned by `createServer` is a Fastify instance, you can
+register any Fastify-compatible plugin onto it, and use the full Fastify
 API:
 
 ```ts
