@@ -4,7 +4,6 @@
 [![MIT License](https://img.shields.io/github/license/47ng/fastify-micro.svg?color=blue)](https://github.com/47ng/fastify-micro/blob/master/LICENSE)
 [![Continuous Integration](https://github.com/47ng/fastify-micro/workflows/Continuous%20Integration/badge.svg?branch=next)](https://github.com/47ng/fastify-micro/actions)
 [![Coverage Status](https://coveralls.io/repos/github/47ng/fastify-micro/badge.svg?branch=next)](https://coveralls.io/github/47ng/fastify-micro?branch=next)
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=47ng/fastify-micro)](https://dependabot.com)
 
 Opinionated Node.js microservices framework built on fastify
 
