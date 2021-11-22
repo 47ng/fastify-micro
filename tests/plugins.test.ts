@@ -2,7 +2,7 @@ import axios from 'axios'
 import { nanoid } from 'nanoid'
 import path from 'path'
 import { createServer, startServer } from '../src'
-import { delay } from './jigs'
+import { delay } from './jigs/delay'
 
 describe('Plugins', () => {
   beforeEach(() => {
@@ -10,7 +10,7 @@ describe('Plugins', () => {
   })
 
   test('Loading routes from filesystem', async () => {
-    const routesDir = path.resolve(path.dirname(__filename), './routes')
+    const routesDir = path.resolve(path.dirname(__filename), './jigs/routes')
     const server = createServer({ routesDir })
     await server.ready()
     const res = await server.inject({ method: 'GET', url: '/foo' })
