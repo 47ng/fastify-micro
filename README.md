@@ -10,9 +10,7 @@
 </div>
 
 <p align="center">
-
-Opinionated Node.js microservices framework built on [Fastify](https://fastify.io).
-
+  Opinionated Node.js microservices framework built on <a href="https://fastify.io">Fastify</a>.
 </p>
 
 ## Features
