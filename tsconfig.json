@@ -26,7 +26,11 @@
 
     // Experimental Options
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+
+  },
+  "ts-node": {
+    "logError": true
   },
   "include": ["./src/**/*.ts", "src/sentry.test.ts"],
   "exclude": ["./tests/**/*.test.ts", "./dist", "./node_modules"]

@@ -1,18 +1,16 @@
 import checkEnv from '@47ng/check-env'
 import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
-import autoLoad from 'fastify-autoload'
-// @ts-ignore
+import { AutoloadPluginOptions, fastifyAutoload } from 'fastify-autoload'
 import gracefulShutdown from 'fastify-graceful-shutdown'
 import 'fastify-sensible'
 import sensible from 'fastify-sensible'
 import underPressurePlugin from 'under-pressure'
 import { getLoggerOptions, makeReqIdGenerator } from './logger'
-import sentry, { SentryDecoration, SentryOptions } from './sentry'
+import sentry, { SentryOptions } from './sentry'
 
 declare module 'fastify' {
   interface FastifyInstance {
     name?: string
-    sentry: SentryDecoration
   }
 }
 
@@ -47,6 +45,8 @@ export type Options = FastifyServerOptions & {
   redactLogPaths?: string[]
 
   /**
+   * @deprecated - Use `plugins` instead to load plugins from the filesystem.
+   *
    * Add your own plugins in this callback.
    *
    * It's called after most built-in plugins have run,
@@ -71,6 +71,22 @@ export type Options = FastifyServerOptions & {
   sentry?: SentryOptions
 
   /**
+   * Load plugins from the filesystem with `fastify-autoload`.
+   *
+   * Plugins are loaded before routes (see `routes` option).
+   */
+  plugins?: AutoloadPluginOptions
+
+  /**
+   * Load routes from the filesystem with `fastify-autoload`.
+   *
+   * Routes are loaded after plugins (see `plugins` option).
+   */
+  routes?: AutoloadPluginOptions
+
+  /**
+   * @deprecated - Use `routes` instead, with full `fastify-autoload` options.
+   *
    * Path to a directory where to load routes.
    *
    * This directory will be walked recursively and any file encountered
@@ -80,6 +96,13 @@ export type Options = FastifyServerOptions & {
    * Pass `false` to disable (it is disabled by default).
    */
   routesDir?: string | false
+
+  /**
+   * Run cleanup tasks before exiting.
+   *
+   * Eg: disconnecting backing services, closing files...
+   */
+  cleanupOnExit?: (server: FastifyInstance) => Promise<void>
 
   /**
    * Print routes after server has loaded
@@ -97,16 +120,15 @@ export type Options = FastifyServerOptions & {
 
 export function createServer(
   options: Options = {
-    routesDir: false,
-    printRoutes: 'auto'
+    printRoutes: 'auto',
+    routesDir: false
   }
 ) {
   checkEnv({ required: ['NODE_ENV'] })
 
   const server = Fastify({
     logger: getLoggerOptions(options),
-    // todo: Fix type when switching to Fastify 3.x
-    genReqId: makeReqIdGenerator() as any,
+    genReqId: makeReqIdGenerator(),
     trustProxy: process.env.TRUSTED_PROXY_IPS,
     ...options
   })
@@ -117,71 +139,118 @@ export function createServer(
   server.register(sensible)
   server.register(sentry, options.sentry as any)
 
-  // Disable graceful shutdown if signal listeners are already in use
-  // (eg: using Clinic.js or other kinds of wrapping utilities)
-  const gracefulSignals = ['SIGINT', 'SIGTERM'].filter(
-    signal => process.listenerCount(signal) > 0
-  )
-  if (gracefulSignals.length === 0) {
-    server.register(gracefulShutdown)
-  } else if (process.env.NODE_ENV === 'production') {
-    server.log.warn({
-      plugin: 'fastify-graceful-shutdown',
-      msg: 'Automatic graceful shutdown is disabled',
-      reason: 'Some signal handlers were already registered',
-      signals: gracefulSignals
-    })
-  }
+  try {
+    if (options.plugins) {
+      server.register(fastifyAutoload, options.plugins)
+    }
+    if (options.configure) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(
+          '[fastify-micro] Option `configure` is deprecated. Use `plugins` instead with full fastify-autoload options.'
+        )
+      }
+      options.configure(server)
+    }
 
-  if (options.configure) {
-    options.configure(server)
-  }
+    // Registered after plugins to let the health check callback
+    // monitor external services' health.
+    if (
+      process.env.FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING !== 'true'
+    ) {
+      const underPressureOptions = options.underPressure || {}
+      server
+        .after(error => {
+          if (error) {
+            throw error
+          }
+        })
+        .register(underPressurePlugin, {
+          maxEventLoopDelay: 1000, // 1s
+          // maxHeapUsedBytes: 100 * (1 << 20), // 100 MiB
+          // maxRssBytes: 100 * (1 << 20), // 100 MiB
+          healthCheckInterval: 5000, // 5 seconds
+          exposeStatusRoute: {
+            url: '/_health',
+            routeOpts: {
+              logLevel: 'warn'
+            }
+          },
+          ...underPressureOptions
+        })
+    }
 
-  if (options.routesDir) {
-    server.register(autoLoad, {
-      dir: options.routesDir
-    })
-  }
+    // Disable graceful shutdown if signal listeners are already in use
+    // (eg: using Clinic.js or other kinds of wrapping utilities)
+    const gracefulSignals = ['SIGINT', 'SIGTERM'].filter(
+      signal => process.listenerCount(signal) > 0
+    )
 
-  if (process.env.FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING !== 'true') {
-    const underPressureOptions = options.underPressure || {}
-    server.register(underPressurePlugin, {
-      maxEventLoopDelay: 1000, // 1s
-      // maxHeapUsedBytes: 100 * (1 << 20), // 100 MiB
-      // maxRssBytes: 100 * (1 << 20), // 100 MiB
-      healthCheckInterval: 5000, // 5 seconds
-      exposeStatusRoute: {
-        url: '/_health',
-        routeOpts: {
-          logLevel: 'warn'
-        }
-      },
-      ...underPressureOptions
-    })
-  }
+    if (gracefulSignals.length === 0 && process.env.NODE_ENV !== 'test') {
+      server.register(gracefulShutdown)
+    } else if (process.env.NODE_ENV === 'production') {
+      server.log.warn({
+        plugin: 'fastify-graceful-shutdown',
+        msg: 'Automatic graceful shutdown is disabled',
+        reason: 'Some signal handlers were already registered',
+        signals: gracefulSignals
+      })
+    }
 
-  if (options.printRoutes !== false) {
-    switch (options.printRoutes || 'auto') {
-      default:
-      case 'auto':
-        if (process.env.NODE_ENV === 'development') {
-          server.ready(() => console.info(server.printRoutes()))
-        }
-        break
-      case 'console':
-        server.ready(() => console.info(server.printRoutes()))
-        break
-      case 'logger':
-        server.ready(() =>
+    if (options.routes) {
+      server.register(fastifyAutoload, options.routes)
+    }
+    if (options.routesDir) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(
+          '[fastify-micro] Option `routesDir` is deprecated. Use `routes` instead with full fastify-autoload options.'
+        )
+      }
+      server.register(fastifyAutoload, {
+        dir: options.routesDir
+      })
+    }
+
+    if (options.cleanupOnExit) {
+      server.addHook('onClose', options.cleanupOnExit)
+    }
+
+    server.ready(error => {
+      if (error) {
+        // This will let the server crash early
+        // on plugin/routes loading errors.
+        throw error
+      }
+      if (options.printRoutes === false) {
+        return
+      }
+      switch (options.printRoutes || 'auto') {
+        default:
+        case 'auto':
+          if (process.env.NODE_ENV === 'development') {
+            console.info(server.printRoutes())
+          }
+          break
+        case 'console':
+          console.info(server.printRoutes())
+          break
+        case 'logger':
           server.log.info({
             msg: 'Routes loaded',
             routes: server.printRoutes()
           })
-        )
-        break
+          break
+      }
+    })
+  } catch (error) {
+    server.log.fatal(error)
+    if (!server.sentry) {
+      process.exit(1)
     }
+    server.sentry
+      .report(error as any)
+      .catch(error => server.log.fatal(error))
+      .finally(() => process.exit(1))
   }
-
   return server
 }
 
@@ -199,7 +268,16 @@ export async function startServer(
   server: FastifyInstance,
   port: number = parseInt(process.env.PORT || '3000') || 3000
 ) {
-  await server.ready()
+  await server.ready().then(
+    () => {
+      server.log.debug('Starting server')
+    },
+    error => {
+      if (error) {
+        throw error
+      }
+    }
+  )
   return await new Promise(resolve => {
     server.listen({ port, host: '0.0.0.0' }, (error, address) => {
       if (error) {

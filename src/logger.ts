@@ -1,7 +1,6 @@
-import crypto from 'crypto'
-import { FastifyLoggerOptions } from 'fastify'
-import { IncomingMessage } from 'http'
+import type { FastifyLoggerOptions, FastifyRequest } from 'fastify'
 import { nanoid } from 'nanoid'
+import crypto from 'node:crypto'
 import pino from 'pino'
 import redactEnv from 'redact-env'
 import SonicBoom from 'sonic-boom'
@@ -75,7 +74,10 @@ export function getLoggerOptions({
                 name === 'content-length'
                   ? parseInt(rest[0], 10)
                   : rest.join(': ')
-              return Object.assign(obj, { [name]: value })
+              return {
+                ...obj,
+                [name]: value
+              }
             } catch {
               return obj
             }
@@ -90,7 +92,7 @@ export function getLoggerOptions({
 }
 
 export const makeReqIdGenerator = (defaultSalt: string = nanoid()) =>
-  function genReqId(req: IncomingMessage): string {
+  function genReqId(req: FastifyRequest): string {
     let ipAddress: string = ''
     const xForwardedFor = req.headers['x-forwarded-for']
     if (xForwardedFor) {
