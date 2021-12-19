@@ -223,20 +223,24 @@ export function createServer(
       if (options.printRoutes === false) {
         return
       }
+      const printRoutesOptions = {
+        commonPrefix: false, // flatten the tree
+        includeHooks: true
+      }
       switch (options.printRoutes || 'auto') {
         default:
         case 'auto':
           if (process.env.NODE_ENV === 'development') {
-            console.info(server.printRoutes())
+            console.info(server.printRoutes(printRoutesOptions))
           }
           break
         case 'console':
-          console.info(server.printRoutes())
+          console.info(server.printRoutes(printRoutesOptions))
           break
         case 'logger':
           server.log.info({
             msg: 'Routes loaded',
-            routes: server.printRoutes()
+            routes: server.printRoutes(printRoutesOptions)
           })
           break
       }

@@ -1,9 +1,10 @@
-const path = require('node:path')
-const { createServer, startServer } = require('../../dist')
+import path from 'node:path'
+import { createServer, startServer } from '../../dist'
 
 async function main() {
   const server = createServer({
     name: 'integration-test',
+    printRoutes: 'console',
     routes: {
       dir: path.resolve(__dirname, './routes')
     }
