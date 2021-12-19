@@ -3,16 +3,24 @@ import { nanoid } from 'nanoid'
 import path from 'path'
 import { createServer, startServer } from '../src'
 import { delay } from './jigs/delay'
+import './jigs/plugins/decorator' // for declaration merging
 
 describe('Plugins', () => {
   beforeEach(() => {
     process.env.LOG_LEVEL = 'silent'
   })
 
-  test('Loading routes from filesystem', async () => {
-    const routesDir = path.resolve(path.dirname(__filename), './jigs/routes')
-    const server = createServer({ routesDir })
+  test('Loading plugins & routes from filesystem', async () => {
+    const server = createServer({
+      plugins: {
+        dir: path.resolve(__dirname, './jigs/plugins')
+      },
+      routes: {
+        dir: path.resolve(__dirname, './jigs/routes')
+      }
+    })
     await server.ready()
+    expect(server.testPlugin).toEqual('works')
     const res = await server.inject({ method: 'GET', url: '/foo' })
     expect(res.statusCode).toEqual(200)
     expect(res.json()).toEqual({ foo: 'bar' })

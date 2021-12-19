@@ -10,7 +10,12 @@ async function main() {
     redactEnv: ['SECRET'],
     redactLogPaths: ['secret']
   })
-  await server.ready()
+  await server.ready().then(
+    () => {},
+    error => {
+      throw error
+    }
+  )
   await server.inject({ method: 'GET', path: '/foo?req1' })
   await server.inject({ method: 'GET', path: '/foo?req2' })
   await server.inject({

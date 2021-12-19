@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node'
-import {
+import type {
   FastifyError,
   FastifyInstance,
   FastifyPluginCallback,
@@ -8,6 +8,9 @@ import {
 import fp from 'fastify-plugin'
 
 declare module 'fastify' {
+  interface FastifyInstance {
+    sentry: SentryDecoration
+  }
   interface FastifyRequest {
     sentry: SentryDecoration
   }
