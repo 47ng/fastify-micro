@@ -36,7 +36,6 @@
     "@sentry/node": "^6.16.1",
     "fastify": "^3.25.0",
     "fastify-autoload": "^3.9.0",
-    "fastify-graceful-shutdown": "^3.1.0",
     "fastify-plugin": "^3.0.0",
     "fastify-sensible": "^3.1.2",
     "get-port": "^6.0.0",

@@ -1,10 +1,10 @@
 import checkEnv from '@47ng/check-env'
 import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
 import { AutoloadPluginOptions, fastifyAutoload } from 'fastify-autoload'
-import gracefulShutdown from 'fastify-graceful-shutdown'
 import 'fastify-sensible'
 import sensible from 'fastify-sensible'
 import underPressurePlugin from 'under-pressure'
+import gracefulShutdown, { GracefulShutdownOptions } from './graceful-shutdown'
 import { getLoggerOptions, makeReqIdGenerator } from './logger'
 import sentry, { SentryOptions } from './sentry'
 
@@ -61,6 +61,11 @@ export type Options = FastifyServerOptions & {
    * Add custom options for under-pressure
    */
   underPressure?: underPressurePlugin.UnderPressureOptions
+
+  /**
+   * Add custom options for graceful shutdown
+   */
+  gracefulShutdown?: GracefulShutdownOptions | false
 
   /**
    * Add custom options for Sentry
@@ -152,47 +157,39 @@ export function createServer(
       options.configure(server)
     }
 
+    const afterPlugins = server.after(error => {
+      if (error) {
+        throw error
+      }
+    })
+
     // Registered after plugins to let the health check callback
     // monitor external services' health.
     if (
       process.env.FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING !== 'true'
     ) {
       const underPressureOptions = options.underPressure || {}
-      server
-        .after(error => {
-          if (error) {
-            throw error
+      afterPlugins.register(underPressurePlugin, {
+        maxEventLoopDelay: 1000, // 1s
+        // maxHeapUsedBytes: 100 * (1 << 20), // 100 MiB
+        // maxRssBytes: 100 * (1 << 20), // 100 MiB
+        healthCheckInterval: 5000, // 5 seconds
+        exposeStatusRoute: {
+          url: '/_health',
+          routeOpts: {
+            logLevel: 'warn'
           }
-        })
-        .register(underPressurePlugin, {
-          maxEventLoopDelay: 1000, // 1s
-          // maxHeapUsedBytes: 100 * (1 << 20), // 100 MiB
-          // maxRssBytes: 100 * (1 << 20), // 100 MiB
-          healthCheckInterval: 5000, // 5 seconds
-          exposeStatusRoute: {
-            url: '/_health',
-            routeOpts: {
-              logLevel: 'warn'
-            }
-          },
-          ...underPressureOptions
-        })
+        },
+        ...underPressureOptions
+      })
     }
 
-    // Disable graceful shutdown if signal listeners are already in use
-    // (eg: using Clinic.js or other kinds of wrapping utilities)
-    const gracefulSignals = ['SIGINT', 'SIGTERM'].filter(
-      signal => process.listenerCount(signal) > 0
-    )
-
-    if (gracefulSignals.length === 0 && process.env.NODE_ENV !== 'test') {
-      server.register(gracefulShutdown)
-    } else if (process.env.NODE_ENV === 'production') {
-      server.log.warn({
-        plugin: 'fastify-graceful-shutdown',
-        msg: 'Automatic graceful shutdown is disabled',
-        reason: 'Some signal handlers were already registered',
-        signals: gracefulSignals
+    if (options.gracefulShutdown !== false) {
+      afterPlugins.register(async fastify => {
+        fastify.register(
+          gracefulShutdown,
+          options.gracefulShutdown as GracefulShutdownOptions | undefined
+        )
       })
     }
 

@@ -2326,14 +2326,6 @@ fastify-error@^0.3.0:
   resolved "https://registry.yarnpkg.com/fastify-error/-/fastify-error-0.3.0.tgz#08866323d521156375a8be7c7fcaf98df946fafb"
   integrity sha512-Jm2LMTB5rsJqlS1+cmgqqM9tTs0UrlgYR7TvDT3ZgXsUI5ib1NjQlqZHf+tDK5tVPdFGwyq02wAoJtyYIRSiFA==
 
-fastify-graceful-shutdown@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/fastify-graceful-shutdown/-/fastify-graceful-shutdown-3.1.0.tgz#5620a3ee05a7d4694c3de234b380e445f46db3f8"
-  integrity sha512-5l3EAxYb99xb3NZkdoZwHgMjmyIlRHZaZNEc/U4CCpgosN2Obh7D3a7wjHfNhRtWfddXYkNuZ+KmUhW5SnAKgA==
-  dependencies:
-    fastify-plugin "^3.0.0"
-    fastparallel "^2.4.0"
-
 fastify-plugin@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-3.0.0.tgz#cf1b8c8098e3b5a7c8c30e6aeb06903370c054ca"
@@ -2376,14 +2368,6 @@ fastify@^3.25.0:
     secure-json-parse "^2.0.0"
     semver "^7.3.2"
     tiny-lru "^7.0.0"
-
-fastparallel@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/fastparallel/-/fastparallel-2.4.0.tgz#65fbec1a5e5902494be772cf5765cbaaece08688"
-  integrity sha512-sacwQ7wwKlQXsa7TN24UvMBLZNLmVcPhmxccC9riFqb3N+fSczJL8eWdnZodZ/KijGVgNBBfvF/NeXER08uXnQ==
-  dependencies:
-    reusify "^1.0.4"
-    xtend "^4.0.2"
 
 fastq@^1.6.0:
   version "1.13.0"
@@ -5298,7 +5282,7 @@ xmlchars@^2.2.0:
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
 
-xtend@^4.0.2, xtend@~4.0.1:
+xtend@~4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
