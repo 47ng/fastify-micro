@@ -6,6 +6,7 @@
 
 import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
+import { performance } from 'node:perf_hooks'
 
 export interface GracefulShutdownOptions {
   /**
@@ -54,21 +55,30 @@ const gracefulShutdownPlugin: FastifyPluginAsync<GracefulShutdownOptions> =
 
     options.signals.forEach(signal => {
       process.once(signal, () => {
+        const tick = performance.now()
         logger.info({ signal }, 'Received signal')
         const timeout = setTimeout(() => {
-          logger.fatal({ signal }, 'Hard-exiting the process after timeout')
+          logger.fatal(
+            { signal, timeout },
+            'Hard-exiting the process after timeout'
+          )
           process.exit(options.hardExitCode)
         }, options.timeoutMs)
         fastify.close().then(
           () => {
+            const tock = performance.now()
             clearTimeout(timeout)
-            logger.info({ signal }, 'Process terminated')
+            logger.info(
+              { signal, onCloseDuration: tock - tick },
+              'Process terminated in time. Bye!'
+            )
             process.exit(0)
           },
           error => {
+            const tock = performance.now()
             logger.error(
-              { signal, error },
-              'Process terminated with error on `onClose` hook'
+              { signal, error, onCloseDuration: tock - tick },
+              'Process terminated with error in `onClose` hook'
             )
             process.exit(1)
           }
