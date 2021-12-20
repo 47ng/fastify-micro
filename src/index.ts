@@ -118,7 +118,7 @@ export type Options = FastifyServerOptions & {
    * - `auto` (default): `console` in development, silent in production.
    * - `console`: always pretty-print routes using `console.info` (for humans)
    * - `logger`: always print as NDJSON as part of the app log stream (info level)
-   * - false: disable route logging
+   * - false: disable route printing
    */
   printRoutes?: 'auto' | 'console' | 'logger' | false
 }

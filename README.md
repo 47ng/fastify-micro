@@ -16,7 +16,7 @@
 ## Features
 
 - Secure and useful logging
-- Load routes from a directory _(opt-in)_
+- [Auto-load](https://github.com/fastify/fastify-autoload) routes & plugins from the filesystem _(opt-in)_
 - Built-in [Sentry](#sentry) support for error reporting _(opt-in)_
 - Service health monitoring
 - Graceful exit
@@ -38,7 +38,8 @@ Minimal example:
 import { createServer, startServer } from 'fastify-micro'
 
 const server = createServer()
-startServer(server, 3000)
+
+startServer(server)
 ```
 
 ## Documentation
@@ -76,6 +77,67 @@ startServer(server)
 
 If no value is specified either via code or environment, the default port will
 be 3000.
+
+### Auto-loading plugins and routes from the filesystem
+
+Plugins and routes can be loaded from the filesystem using
+[`fastify-autoload`](https://github.com/fastify/fastify-autoload):
+
+```ts
+import path from 'path'
+import { createServer } from 'fastify-micro'
+
+createServer({
+  plugins: {
+    dir: path.join(__dirname, 'plugins')
+  },
+  routes: {
+    dir: path.join(__dirname, 'routes')
+  }
+})
+```
+
+The `plugins` and `routes` options are `fastify-autoload` configuration objects.
+
+As recommended by Fastify, plugins will be loaded first, then routes.
+Attach your external services, decorators and hooks as plugin files, so that
+they will be loaded when declaring your routes.
+
+#### Printing Routes
+
+In development, the server will log the route tree on startup.
+This can be configured:
+
+```ts
+createServer({
+  printRoutes:
+    | 'auto'    // default: `console` in development, silent in production.
+    | 'console' // always pretty-print routes using `console.info` (for humans)
+    | 'logger'  // always print as NDJSON as part of the app log stream (info level)
+    | false     // disable route printing
+})
+```
+
+### Other default plugins
+
+The following plugins are loaded by default:
+
+- [`fastify-sensible`](https://github.com/fastify/fastify-sensible),
+  for convention-based error handling.
+
+### Loading other plugins
+
+The server returned by `createServer` is a Fastify instance, you can
+register any Fastify-compatible plugin onto it, and use the full Fastify
+API:
+
+```ts
+const server = createServer()
+
+server.register(require('fastify-cors'))
+
+server.get('/', () => 'Hello, world !')
+```
 
 ### Logging
 
@@ -301,7 +363,10 @@ const exampleRoute = (req, res) => {
 }
 ```
 
-#### Note: v2 to v3 migration
+<details>
+<summary>
+  <h4>Note: v2 to v3 migration</h4>
+</summary>
 
 in versions <= 2.x.x, the request object was passed as the second argument to the `report` function.
 
@@ -323,6 +388,8 @@ const exampleRoute = (req, res) => {
   })
 }
 ```
+
+</details>
 
 #### Sentry Releases
 
@@ -348,11 +415,41 @@ by the environment variable.
 
 ### Graceful exit
 
-<!-- todo: Add detailed documentation -->
+When receiving `SIGINT` or `SIGTERM`, Fastify applications quit instantly,
+potentially leaking file descriptors or open resources.
 
-- Disabled automatically when running in test runners and under
-  instrumentation tools like Clinic.js
-- Will log a warning if disabled in production
+To clean up before exiting, add a `cleanupOnExit` callback in the options:
+
+```ts
+createServer({
+  cleanupOnExit: async app => {
+    // Release external resources
+    await app.database.close()
+  }
+})
+```
+
+This uses the Fastify `onClose` hook, which will be called when receiving a
+termination signal. If the onClose hooks take too long to resolve, the process
+will perform a hard-exit after a timeout.
+
+You can specify the list of signals to handle gracefully, along with a few other
+options:
+
+```ts
+createServer({
+  gracefulShutdown: {
+    signals: ['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGTSTP'],
+
+    // How long to wait for the onClose hooks to resolve
+    // before perfoming a hard-exit of the process (default 10s):
+    timeoutMs: 20_000,
+
+    // The exit code to use when hard-exiting (default 1)
+    hardExitCode: 123
+  }
+})
+```
 
 ### Service availability monitoring & health check
 
@@ -394,67 +491,10 @@ createServer({
 If for some reason you wish to disable service health monitoring, you can set
 the `FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING` environment variable to `true`.
 
-### Auto-loading routes and plugins from the filesystem
+## Deprecated APIs
 
-Routes and plugins can be loaded from the filesystem using
-[`fastify-autoload`](https://github.com/fastify/fastify-autoload),
-by passing a path to load recursively from:
-
-```ts
-import path from 'path'
-import { createServer } from 'fastify-micro'
-
-createServer({
-  // Will load every file in ./routes/**
-  routesDir: path.join(__dirname, 'routes')
-})
-```
-
-> _**Note**_: in development, the server will log its routes on startup.
-> This can be useful to see what routes will be active.
-
-Check out the [`fastify-autoload` documentation](https://github.com/fastify/fastify-autoload)
-for more details.
-
-### Other default plugins & configuration
-
-<!-- todo: Add detailed documentation -->
-
-The following plugins are loaded by default:
-
-- [`fastify-sensible`](https://github.com/fastify/fastify-sensible),
-  for convention-based error handling.
-
-### Loading other plugins
-
-The server returned by `createServer` is a Fastify instance, you can
-register any Fastify-compatible plugin onto it, and use the full Fastify
-API:
-
-```ts
-const server = createServer()
-
-server.register(require('fastify-cors'))
-
-server.get('/', () => 'Hello, world !')
-```
-
-For loading plugins before filesystem routes are loaded, a `configure`
-method can be provided in the options:
-
-```ts
-const server = createServer({
-  configure: server => {
-    server.addHook('onRoute', route => {
-      // Will be invoked for every loaded route
-    })
-    // Will run before the routes are loaded
-    server.decorate('db', databaseClient)
-  }
-})
-
-server.decorate('after', 'Will run after the routes are loaded')
-```
+- `configure` _(will be removed in v4.x)_: Use `plugins` with full `fastify-autoload` options.
+- `routesDir` _(will be removed in v4.x)_: Use `routes` with full `fastify-autoload` options.
 
 ## License
 
