@@ -45,7 +45,7 @@
     "under-pressure": "^5.8.0"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^15.0.0",
+    "@commitlint/config-conventional": "^16.2.1",
     "@swc/cli": "^0.1.55",
     "@swc/core": "^1.2.121",
     "@swc/helpers": "^0.3.2",
