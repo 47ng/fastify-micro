@@ -58,10 +58,7 @@ const gracefulShutdownPlugin: FastifyPluginAsync<GracefulShutdownOptions> =
         const tick = performance.now()
         logger.info({ signal }, 'Received signal')
         const timeout = setTimeout(() => {
-          logger.fatal(
-            { signal, timeout },
-            'Hard-exiting the process after timeout'
-          )
+          logger.fatal({ signal }, 'Hard-exiting the process after timeout')
           process.exit(options.hardExitCode)
         }, options.timeoutMs)
         fastify.close().then(
