@@ -33,7 +33,7 @@ export interface SentryExtra {
 }
 
 export type SentryReportFn = (
-  error: Error,
+  error: unknown,
   extra?: Partial<SentryExtra>
 ) => Promise<void>
 
