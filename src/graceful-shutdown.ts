@@ -4,7 +4,7 @@
 // - await async onClose hooks
 // - add some options
 
-import { FastifyPluginAsync } from 'fastify'
+import type { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 import { performance } from 'node:perf_hooks'
 
@@ -85,6 +85,6 @@ const gracefulShutdownPlugin: FastifyPluginAsync<GracefulShutdownOptions> =
   }
 
 export default fp(gracefulShutdownPlugin, {
-  fastify: '3.x',
+  fastify: '4.x',
   name: 'fastify-micro:graceful-shutdown'
 })

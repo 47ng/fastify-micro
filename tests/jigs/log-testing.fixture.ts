@@ -6,7 +6,9 @@ async function main() {
   process.env.LOG_FINGERPRINT_SALT = 'make-tests-reproducible'
   const server = createServer({
     name: 'foo',
-    routesDir: path.resolve(__dirname, './routes'),
+    routes: {
+      dir: path.resolve(__dirname, './routes')
+    },
     redactEnv: ['SECRET'],
     redactLogPaths: ['secret']
   })

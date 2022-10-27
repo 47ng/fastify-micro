@@ -14,22 +14,20 @@ describe('Health checks', () => {
   })
 
   test('Custom health check handler is called at startup and every 5 seconds', async () => {
-    jest.useFakeTimers('legacy')
     const healthCheck = jest.fn().mockResolvedValue(true)
     const server = createServer({
       underPressure: {
         healthCheck
       }
     })
+    jest.useFakeTimers({ advanceTimers: true })
     await server.ready()
     expect(healthCheck).toHaveBeenCalledTimes(1)
     jest.advanceTimersByTime(5000)
     expect(healthCheck).toHaveBeenCalledTimes(2)
-    jest.useRealTimers()
   })
 
   test('Custom health check throwing results in 503', async () => {
-    jest.useFakeTimers('legacy')
     const healthCheck = jest
       .fn()
       .mockResolvedValueOnce(true) // First call passes (setup)
@@ -46,6 +44,7 @@ describe('Health checks', () => {
         }
       }
     })
+    jest.useFakeTimers({ advanceTimers: true })
     await server.ready()
     const res1 = await server.inject({ method: 'GET', url: '/_health' })
     expect(res1.statusCode).toEqual(200)
@@ -59,23 +58,21 @@ describe('Health checks', () => {
       message: 'Service Unavailable',
       statusCode: 503
     })
-    jest.useRealTimers()
   })
 
   test('Disabled health monitoring', async () => {
     process.env.FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING = 'true'
-    jest.useFakeTimers('legacy')
     const healthCheck = jest.fn().mockResolvedValue(true)
     const server = createServer({
       underPressure: {
         healthCheck
       }
     })
+    jest.useFakeTimers({ advanceTimers: true })
     await server.ready()
     expect(healthCheck).not.toHaveBeenCalled()
     jest.advanceTimersByTime(5000)
     expect(healthCheck).not.toHaveBeenCalled()
-    jest.useRealTimers()
     process.env.FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING = undefined
   })
 })

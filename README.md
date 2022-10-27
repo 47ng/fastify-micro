@@ -491,11 +491,6 @@ createServer({
 If for some reason you wish to disable service health monitoring, you can set
 the `FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING` environment variable to `true`.
 
-## Deprecated APIs
-
-- `configure` _(will be removed in v4.x)_: Use `plugins` with full `fastify-autoload` options.
-- `routesDir` _(will be removed in v4.x)_: Use `routes` with full `fastify-autoload` options.
-
 ## License
 
 [MIT](https://github.com/47ng/fastify-micro/blob/master/LICENSE) - Made with ❤️ by [François Best](https://francoisbest.com)

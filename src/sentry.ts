@@ -148,6 +148,6 @@ function sentryPlugin(
 }
 
 export default fp(sentryPlugin as FastifyPluginCallback<SentryOptions>, {
-  fastify: '3.x',
+  fastify: '4.x',
   name: 'fastify-micro:sentry'
 })

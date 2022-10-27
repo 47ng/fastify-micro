@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { nanoid } from 'nanoid'
 import path from 'path'
 import { createServer, startServer } from '../src'
+import { randomID } from '../src/randomID'
 import { delay } from './jigs/delay'
 import './jigs/plugins/decorator' // for declaration merging
 
@@ -28,7 +28,7 @@ describe('Plugins', () => {
 
   test('Graceful exit', async () => {
     //jest.setTimeout(10000)
-    const key = nanoid()
+    const key = randomID()
     const server = createServer()
     server.get('/', async (_, res) => {
       await delay(1000)
@@ -43,7 +43,7 @@ describe('Plugins', () => {
   })
 
   test('Graceful exit with a slow onClose hook', async () => {
-    const key = nanoid()
+    const key = randomID()
     const server = createServer()
     server.get('/', async (_, res) => {
       await delay(1000)

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { nanoid } from 'nanoid'
 import { createServer, startServer } from '../src'
+import { randomID } from '../src/randomID'
 
 describe('Basics', () => {
   beforeEach(() => {
@@ -15,7 +15,7 @@ describe('Basics', () => {
   })
 
   test('Default port should be 3000', async () => {
-    const key = nanoid()
+    const key = randomID()
     const server = createServer()
     server.get('/', (_, res) => {
       res.send({ key })
@@ -28,7 +28,7 @@ describe('Basics', () => {
 
   test('Port should be configurable via the environment', async () => {
     process.env.PORT = '3001'
-    const key = nanoid()
+    const key = randomID()
     const server = createServer()
     server.get('/', (_, res) => {
       res.send({ key })
@@ -42,7 +42,7 @@ describe('Basics', () => {
 
   test('Port can be passed as a second argument to `startServer`', async () => {
     const server = createServer()
-    const key = nanoid()
+    const key = randomID()
     server.get('/', (_, res) => {
       res.send({ key })
     })
