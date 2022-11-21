@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@47ng/check-env": "^2.1.0",
-    "@sentry/node": "^6.18.1",
+    "@sentry/node": "^7.20.0",
     "fastify": "^3.27.2",
     "fastify-autoload": "^3.11.0",
     "fastify-plugin": "^3.0.1",
