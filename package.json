@@ -42,7 +42,7 @@
     "@fastify/under-pressure": "^8.1.0",
     "@sentry/node": "^7.17.1",
     "fastify-plugin": "^4.3.0",
-    "get-port": "^6.1.2",
+    "get-port": ">=5 <6",
     "pino-abstract-transport": "^1.0.0",
     "redact-env": "^1.0.0",
     "sonic-boom": "^3.2.0"

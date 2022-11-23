@@ -1,4 +1,5 @@
 import axios from 'axios'
+import getPort from 'get-port'
 import { createServer, startServer } from '../src'
 import { randomID } from '../src/randomID'
 
@@ -46,8 +47,9 @@ describe('Basics', () => {
     server.get('/', (_, res) => {
       res.send({ key })
     })
-    await startServer(server, 3002)
-    const res = await axios.get('http://localhost:3002/')
+    const port = await getPort({ port: getPort.makeRange(3000, 3100) })
+    await startServer(server, port)
+    const res = await axios.get(`http://localhost:${port}/`)
     expect(res.data.key).toEqual(key)
     await server.close()
   })
