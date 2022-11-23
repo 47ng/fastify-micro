@@ -62,7 +62,7 @@ function sentryPlugin(
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     release: options.release ?? process.env.SENTRY_RELEASE,
-    environment: process.env.NODE_ENV,
+    environment: process.env.SENTRY_ENVIRONMENT ?? process.env.NODE_ENV,
     enabled: !!process.env.SENTRY_DSN,
     ...options
   })
