@@ -56,36 +56,9 @@ export function getLoggerOptions({
         }
       },
       res(res: FastifyReply) {
-        // Response has already be sent at time of logging,
-        // so we need to parse the headers to log them.
-        // Trying to collect them earlier to show them here
-        // is flaky and tightly couples things, moreover these
-        // are the source of truth for what was sent to the user,
-        // and includes framework-managed headers such as content-length.
-        const headers = (((res as any)._header || '') as string)
-          .split('\r\n')
-          .slice(1) // Remove HTTP/1.1 {statusCode} {statusText}
-          .reduce((obj, header: string) => {
-            try {
-              const [name, ...rest] = header.split(': ')
-              if (['', 'date', 'connection'].includes(name.toLowerCase())) {
-                return obj // Ignore those
-              }
-              const value =
-                name === 'content-length'
-                  ? parseInt(rest[0], 10)
-                  : rest.join(': ')
-              return {
-                ...obj,
-                [name]: value
-              }
-            } catch {
-              return obj
-            }
-          }, {})
         return {
           statusCode: res.statusCode,
-          headers
+          headers: res.getHeaders()
         }
       }
     }
