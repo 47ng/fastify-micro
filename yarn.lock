@@ -1056,72 +1056,39 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@sentry/core@6.18.1":
-  version "6.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-6.18.1.tgz#6d09c4f59b30b62d5d288b5f3f3af56f1f7e6336"
-  integrity sha512-9V8Q+3Asi+3RL67CSIMMZ9mjMsu2/hrpQszYStX7hPPpAZIlAKk2MT5B+na/r80iWKhy+3Ts6aDFF218QtnsVw==
+"@sentry/core@7.36.0":
+  version "7.36.0"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-7.36.0.tgz#37c82a1ad3f74dbe2c2fcd55f45068e127012fcc"
+  integrity sha512-lq1MlcMhvm7QIwUOknFeufkg4M6QREY3s61y6pm1o+o3vSqB7Hz0D19xlyEpP62qMn8OyuttVKOVK1UfGc2EyQ==
   dependencies:
-    "@sentry/hub" "6.18.1"
-    "@sentry/minimal" "6.18.1"
-    "@sentry/types" "6.18.1"
-    "@sentry/utils" "6.18.1"
+    "@sentry/types" "7.36.0"
+    "@sentry/utils" "7.36.0"
     tslib "^1.9.3"
 
-"@sentry/hub@6.18.1":
-  version "6.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/hub/-/hub-6.18.1.tgz#fcfb8cb84515efefaf4e48472305ea5a71455abb"
-  integrity sha512-+zGzgc/xX3an/nKA3ELMn9YD9VmqbNaNwWZ5/SjNUvzsYHh2UNZ7YzT8WawQsRVOXLljyCKxkWpFB4EchiYGbw==
+"@sentry/node@^7.36.0":
+  version "7.36.0"
+  resolved "https://registry.yarnpkg.com/@sentry/node/-/node-7.36.0.tgz#7c42a6a2f4d979563c1c595ccd5a0c6d5b5abc19"
+  integrity sha512-nAHAY+Rbn5OlTpNX/i6wYrmw3hT/BtwPZ/vNU52cKgw7CpeE1UrCeFjnPn18rQPB7lIh7x0vNvoaPrfemRzpSQ==
   dependencies:
-    "@sentry/types" "6.18.1"
-    "@sentry/utils" "6.18.1"
-    tslib "^1.9.3"
-
-"@sentry/minimal@6.18.1":
-  version "6.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/minimal/-/minimal-6.18.1.tgz#eac73d2262589930aa0bb33e0e12380ac5b766a9"
-  integrity sha512-dm+0MuasWNi/LASvHX+09oCo8IBZY5WpMK8qXvQMnwQ9FVfklrjcfEI3666WORDCmeUhDCSeL2MbjPDm+AmPLg==
-  dependencies:
-    "@sentry/hub" "6.18.1"
-    "@sentry/types" "6.18.1"
-    tslib "^1.9.3"
-
-"@sentry/node@^6.18.1":
-  version "6.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/node/-/node-6.18.1.tgz#8eddc80226bda77dd91100eb522e1e7d88963461"
-  integrity sha512-aTb2gwfZUq0lGDRGH5zNOYDfFMOQZu6E0QcAsvH2ZBcEj3rUWZz3r25COFrHmfzHLUV1KcF2AmnWo1QU1jmm0g==
-  dependencies:
-    "@sentry/core" "6.18.1"
-    "@sentry/hub" "6.18.1"
-    "@sentry/tracing" "6.18.1"
-    "@sentry/types" "6.18.1"
-    "@sentry/utils" "6.18.1"
+    "@sentry/core" "7.36.0"
+    "@sentry/types" "7.36.0"
+    "@sentry/utils" "7.36.0"
     cookie "^0.4.1"
     https-proxy-agent "^5.0.0"
     lru_map "^0.3.3"
     tslib "^1.9.3"
 
-"@sentry/tracing@6.18.1":
-  version "6.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-6.18.1.tgz#7cc54b328dd051102900ade53e907e7441426f83"
-  integrity sha512-OxozmSfxGx246Ae1XhO01I7ZWxO3briwMBh55E5KyjQb8fuS9gVE7Uy8ZRs5hhNjDutFAU7nMtC0zipfVxP6fg==
-  dependencies:
-    "@sentry/hub" "6.18.1"
-    "@sentry/minimal" "6.18.1"
-    "@sentry/types" "6.18.1"
-    "@sentry/utils" "6.18.1"
-    tslib "^1.9.3"
+"@sentry/types@7.36.0":
+  version "7.36.0"
+  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.36.0.tgz#205baaf7332ff55d1fb35413cbde16dea4168520"
+  integrity sha512-uvfwUn3okAWSZ948D/xqBrkc3Sn6TeHUgi3+p/dTTNGAXXskzavgfgQ4rSW7f3YD4LL+boZojpoIARVLodMGuA==
 
-"@sentry/types@6.18.1":
-  version "6.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-6.18.1.tgz#e2de38dd0da8096a5d22f8effc6756c919266ede"
-  integrity sha512-wp741NoBKnXE/4T9L723sWJ8EcNMxeTIT1smgNJOfbPwrsDICoYmGEt6JFa05XHpWBGI66WuNvnDjoHVeh6zhA==
-
-"@sentry/utils@6.18.1":
-  version "6.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-6.18.1.tgz#1aa819502b042540612f4db7bcb86c7b176f5a6b"
-  integrity sha512-IFZmuvA+c5lDGlZEri13JSyUP0BHelzY0S4dcKxAzskPW+BtBdQDgYGV90iED1y+IRMLawWb34GF7HyJSouN1Q==
+"@sentry/utils@7.36.0":
+  version "7.36.0"
+  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-7.36.0.tgz#b81cf63c7b5daad3f0f152c4ad319203f968ba1b"
+  integrity sha512-mgDi5X5Bm0sydCzXpnyKD/sD98yc2qnKXyRdNX4HRRwruhC/P53LT0hGhZXsyqsB/l8OAMl0zWXJLg0xONQsEw==
   dependencies:
-    "@sentry/types" "6.18.1"
+    "@sentry/types" "7.36.0"
     tslib "^1.9.3"
 
 "@sinonjs/commons@^1.7.0":
