@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { nanoid } from 'nanoid'
-import path from 'path'
+import path from 'node:path'
+import { setTimeout } from 'node:timers/promises'
 import { createServer, startServer } from '../src'
-import { delay } from './jigs/delay'
+import { randomID } from '../src/randomID'
 import './jigs/plugins/decorator' // for declaration merging
 
 describe('Plugins', () => {
@@ -28,34 +28,34 @@ describe('Plugins', () => {
 
   test('Graceful exit', async () => {
     //jest.setTimeout(10000)
-    const key = nanoid()
+    const key = randomID()
     const server = createServer()
     server.get('/', async (_, res) => {
-      await delay(1000)
+      await setTimeout(1000)
       res.send({ key })
     })
     await startServer(server)
     const resBeforeP = axios.get('http://localhost:3000/')
-    await delay(100) // Give time to the request to start before shutting down the server
+    await setTimeout(100) // Give time to the request to start before shutting down the server
     await server.close()
     const resBefore = await resBeforeP
     expect(resBefore.data.key).toEqual(key)
   })
 
   test('Graceful exit with a slow onClose hook', async () => {
-    const key = nanoid()
+    const key = randomID()
     const server = createServer()
     server.get('/', async (_, res) => {
-      await delay(1000)
+      await setTimeout(1000)
       res.send({ key })
     })
     server.addHook('onClose', async (_, done) => {
-      await delay(3000) // Simulate slow shutdown of backing services
+      await setTimeout(3000) // Simulate slow shutdown of backing services
       done()
     })
     await startServer(server)
     const resBeforeP = axios.get('http://localhost:3000/')
-    await delay(100) // Give time to the request to start before shutting down the server
+    await setTimeout(100) // Give time to the request to start before shutting down the server
     await server.close()
     const resBefore = await resBeforeP
     expect(resBefore.data.key).toEqual(key)

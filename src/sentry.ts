@@ -62,7 +62,7 @@ function sentryPlugin(
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     release: options.release ?? process.env.SENTRY_RELEASE,
-    environment: process.env.NODE_ENV,
+    environment: process.env.SENTRY_ENVIRONMENT ?? process.env.NODE_ENV,
     enabled: !!process.env.SENTRY_DSN,
     ...options
   })
@@ -148,6 +148,6 @@ function sentryPlugin(
 }
 
 export default fp(sentryPlugin as FastifyPluginCallback<SentryOptions>, {
-  fastify: '3.x',
+  fastify: '4.x',
   name: 'fastify-micro:sentry'
 })

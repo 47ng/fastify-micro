@@ -1,9 +1,11 @@
-import checkEnv from '@47ng/check-env'
-import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
-import { AutoloadPluginOptions, fastifyAutoload } from 'fastify-autoload'
-import 'fastify-sensible'
-import sensible from 'fastify-sensible'
-import underPressurePlugin from 'under-pressure'
+import { checkEnv } from '@47ng/check-env'
+import { AutoloadPluginOptions, fastifyAutoload } from '@fastify/autoload'
+import sensible from '@fastify/sensible'
+import underPressurePlugin, {
+  UnderPressureOptions
+} from '@fastify/under-pressure'
+import Fastify, { FastifyHttpsOptions, FastifyInstance } from 'fastify'
+import https from 'node:https'
 import gracefulShutdown, { GracefulShutdownOptions } from './graceful-shutdown'
 import { getLoggerOptions, makeReqIdGenerator } from './logger'
 import sentry, { SentryOptions } from './sentry'
@@ -14,13 +16,19 @@ declare module 'fastify' {
   }
 }
 
-export type Options = FastifyServerOptions & {
+export type Options = Omit<FastifyHttpsOptions<https.Server>, 'https'> & {
   /**
    * The name of your service.
    *
    * It will show in the logs under the "from" key.
    */
   name?: string
+
+  /**
+   * Enable HTTPS for your server by passing a TLS configuration.
+   * Disabled by default.
+   */
+  https?: FastifyHttpsOptions<https.Server>['https']
 
   /**
    * A list of environment variable names, whose values will be redacted in the logs.
@@ -45,22 +53,9 @@ export type Options = FastifyServerOptions & {
   redactLogPaths?: string[]
 
   /**
-   * @deprecated - Use `plugins` instead to load plugins from the filesystem.
-   *
-   * Add your own plugins in this callback.
-   *
-   * It's called after most built-in plugins have run,
-   * but before loading your routes (if enabled with routesDir).
-   *
-   * This is where we recommend registering interfaces
-   * to your service's data stores.
-   */
-  configure?: (server: FastifyInstance) => void
-
-  /**
    * Add custom options for under-pressure
    */
-  underPressure?: underPressurePlugin.UnderPressureOptions
+  underPressure?: UnderPressureOptions
 
   /**
    * Add custom options for graceful shutdown
@@ -90,19 +85,6 @@ export type Options = FastifyServerOptions & {
   routes?: AutoloadPluginOptions
 
   /**
-   * @deprecated - Use `routes` instead, with full `fastify-autoload` options.
-   *
-   * Path to a directory where to load routes.
-   *
-   * This directory will be walked recursively and any file encountered
-   * will be registered as a fastify plugin.
-   * Routes are loaded after `configure` has run (if specified).
-   *
-   * Pass `false` to disable (it is disabled by default).
-   */
-  routesDir?: string | false
-
-  /**
    * Run cleanup tasks before exiting.
    *
    * Eg: disconnecting backing services, closing files...
@@ -126,16 +108,16 @@ export type Options = FastifyServerOptions & {
 export function createServer(
   options: Options = {
     printRoutes: 'auto',
-    routesDir: false
+    https: null
   }
 ) {
   checkEnv({ required: ['NODE_ENV'] })
-
   const server = Fastify({
     logger: getLoggerOptions(options),
     genReqId: makeReqIdGenerator(),
     trustProxy: process.env.TRUSTED_PROXY_IPS,
-    ...options
+    ...options,
+    https: options.https ?? null
   })
   if (options.name) {
     server.decorate('name', options.name)
@@ -147,14 +129,6 @@ export function createServer(
   try {
     if (options.plugins) {
       server.register(fastifyAutoload, options.plugins)
-    }
-    if (options.configure) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn(
-          '[fastify-micro] Option `configure` is deprecated. Use `plugins` instead with full fastify-autoload options.'
-        )
-      }
-      options.configure(server)
     }
 
     const afterPlugins = server.after(error => {
@@ -195,16 +169,6 @@ export function createServer(
 
     if (options.routes) {
       server.register(fastifyAutoload, options.routes)
-    }
-    if (options.routesDir) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn(
-          '[fastify-micro] Option `routesDir` is deprecated. Use `routes` instead with full fastify-autoload options.'
-        )
-      }
-      server.register(fastifyAutoload, {
-        dir: options.routesDir
-      })
     }
 
     if (options.cleanupOnExit) {
@@ -280,7 +244,8 @@ export async function startServer(
     }
   )
   return await new Promise(resolve => {
-    server.listen({ port, host: '0.0.0.0' }, (error, address) => {
+    // Listen on both :: (IPv6) and 0.0.0.0 (IPv4)
+    server.listen({ port, host: '::', ipv6Only: false }, (error, address) => {
       if (error) {
         server.log.fatal({ msg: `Application startup error`, error, address })
         process.exit(1)

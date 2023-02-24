@@ -8,6 +8,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "esModuleInterop": true,
+    "allowJs": true,
 
     // Strict Type-Checking Options
     "strict": true,
@@ -26,12 +27,17 @@
 
     // Experimental Options
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-
+    "emitDecoratorMetadata": true
   },
   "ts-node": {
-    "logError": true
+    "transpileOnly": true,
+    "logError": true, // Not logging silently skips fastify-autoload errors
+    "transpiler": "ts-node/transpilers/swc-experimental"
   },
-  "include": ["./src/**/*.ts", "src/sentry.test.ts"],
+  "include": [
+    "./src/**/*.ts",
+    "src/sentry.test.ts",
+    "src/logRedactionWorker.mjs"
+  ],
   "exclude": ["./tests/**/*.test.ts", "./dist", "./node_modules"]
 }

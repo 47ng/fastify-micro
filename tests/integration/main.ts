@@ -1,3 +1,4 @@
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { createServer, startServer } from '../../dist'
 
@@ -7,6 +8,14 @@ async function main() {
     printRoutes: 'console',
     routes: {
       dir: path.resolve(__dirname, './routes')
+    },
+    https: {
+      cert: await fs.readFile(
+        path.resolve(__dirname, '../../certs/fastify-micro.localhost.pem')
+      ),
+      key: await fs.readFile(
+        path.resolve(__dirname, '../../certs/fastify-micro.localhost-key.pem')
+      )
     }
   })
   await startServer(server)

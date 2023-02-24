@@ -22,50 +22,67 @@
     "access": "public"
   },
   "scripts": {
-    "test": "jest --coverage --runInBand",
-    "test:watch": "jest --watch --runInBand",
-    "build:clean": "rm -rf ./dist",
+    "test": "NODE_EXTRA_CA_CERTS=\"$(mkcert -CAROOT)/rootCA.pem\" jest --coverage --runInBand",
+    "test:watch": "NODE_EXTRA_CA_CERTS=\"$(mkcert -CAROOT)/rootCA.pem\" jest --watch --runInBand",
+    "prebuild": "rm -rf ./dist && mkdir -p ./dist",
+    "build": "run-p build:*",
     "build:ts": "tsc",
-    "build": "run-s build:clean build:ts",
+    "build:copy-worker": "cp -f ./src/logRedactionWorker.mjs ./dist/",
     "ci": "run-s build test",
     "test:integration": "NODE_ENV=production ts-node ./tests/integration/main.ts",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "mkcert": "mkcert -cert-file ./certs/fastify-micro.localhost.pem -key-file ./certs/fastify-micro.localhost-key.pem fastify-micro.localhost localhost 127.0.0.1 ::1"
+  },
+  "peerDependencies": {
+    "fastify": "^4",
+    "pino": "^7 || ^8"
   },
   "dependencies": {
-    "@47ng/check-env": "^2.1.0",
-    "@sentry/node": "^6.18.1",
-    "fastify": "^3.27.2",
-    "fastify-autoload": "^3.11.0",
-    "fastify-plugin": "^3.0.1",
-    "fastify-sensible": "^3.1.2",
-    "get-port": "^6.1.2",
-    "nanoid": "^3.3.1",
-    "redact-env": "^0.3.1",
-    "sonic-boom": "^2.6.0",
-    "under-pressure": "^5.8.0"
+    "@47ng/check-env": "^3.0.0",
+    "@fastify/autoload": "^5.7.1",
+    "@fastify/sensible": "^5.2.0",
+    "@fastify/under-pressure": "^8.2.0",
+    "@sentry/node": "^7.38.0",
+    "fastify-plugin": "^4.5.0",
+    "pino-abstract-transport": "^1.0.0",
+    "redact-env": "^1.0.0",
+    "sonic-boom": "^3.2.1"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^16.2.1",
-    "@types/jest": "^27.4.1",
-    "@types/node": "^17.0.21",
+    "@commitlint/config-conventional": "^17.4.4",
+    "@swc/cli": "^0.1.62",
+    "@swc/core": "^1.3.36",
+    "@swc/helpers": "^0.4.14",
+    "@swc/jest": "^0.2.24",
+    "@types/jest": "^29.4.0",
+    "@types/node": "^18.14.1",
     "@types/pino": "7.0.5",
-    "@types/sonic-boom": "^2.1.1",
-    "axios": "^0.26.0",
-    "commitlint": "^16.2.1",
-    "husky": "^7.0.4",
-    "jest": "^27.5.1",
+    "axios": "^1.3.4",
+    "commitlint": "^17.4.4",
+    "fastify": "^4.13.0",
+    "husky": "^8.0.3",
+    "jest": "^29.4.3",
     "npm-run-all": "^4.1.5",
-    "regenerator-runtime": "^0.13.9",
-    "sentry-testkit": "^3.3.7",
-    "ts-jest": "^27.1.3",
-    "ts-node": "^10.6.0",
-    "typescript": "^4.6.2",
+    "pino": "^8.11.0",
+    "regenerator-runtime": "^0.13.11",
+    "sceau": "^1.3.0",
+    "sentry-testkit": "^5.0.5",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
     "wait-for-expect": "^3.0.2"
   },
   "jest": {
     "verbose": true,
-    "preset": "ts-jest/presets/js-with-ts",
+    "transform": {
+      "^.+\\.(t|j)sx?$": [
+        "@swc/jest"
+      ]
+    },
     "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.ts"
+    ],
     "testPathIgnorePatterns": [
       "/node_modules/",
       "<rootDir>/tests/integration/"
