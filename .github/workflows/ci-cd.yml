@@ -22,6 +22,8 @@ jobs:
           node-version: lts/*
           cache: pnpm
       # Generate local TLS certificates to test HTTPS support, using mkcert:
+      - name: Install dependencies
+        run: pnpm install
       - name: Install & setup mkcert
         run: |
           sudo apt install libnss3-tools
@@ -30,8 +32,6 @@ jobs:
           sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
           echo "mkcert version: $(mkcert -version)"
           mkcert -install
-      - name: Install dependencies
-        run: pnpm install
       - name: Generate TLS certificates
         run: pnpm mkcert
       - name: Run integration tests
