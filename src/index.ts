@@ -1,8 +1,11 @@
 import { checkEnv } from '@47ng/check-env'
 import { AutoloadPluginOptions, fastifyAutoload } from '@fastify/autoload'
 import sensible from '@fastify/sensible'
-import underPressurePlugin from '@fastify/under-pressure'
-import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
+import underPressurePlugin, {
+  UnderPressureOptions
+} from '@fastify/under-pressure'
+import Fastify, { FastifyHttpsOptions, FastifyInstance } from 'fastify'
+import https from 'node:https'
 import gracefulShutdown, { GracefulShutdownOptions } from './graceful-shutdown'
 import { getLoggerOptions, makeReqIdGenerator } from './logger'
 import sentry, { SentryOptions } from './sentry'
@@ -13,13 +16,19 @@ declare module 'fastify' {
   }
 }
 
-export type Options = FastifyServerOptions & {
+export type Options = Omit<FastifyHttpsOptions<https.Server>, 'https'> & {
   /**
    * The name of your service.
    *
    * It will show in the logs under the "from" key.
    */
   name?: string
+
+  /**
+   * Enable HTTPS for your server by passing a TLS configuration.
+   * Disabled by default.
+   */
+  https?: FastifyHttpsOptions<https.Server>['https']
 
   /**
    * A list of environment variable names, whose values will be redacted in the logs.
@@ -46,7 +55,7 @@ export type Options = FastifyServerOptions & {
   /**
    * Add custom options for under-pressure
    */
-  underPressure?: underPressurePlugin.UnderPressureOptions
+  underPressure?: UnderPressureOptions
 
   /**
    * Add custom options for graceful shutdown
@@ -98,7 +107,8 @@ export type Options = FastifyServerOptions & {
 
 export function createServer(
   options: Options = {
-    printRoutes: 'auto'
+    printRoutes: 'auto',
+    https: null
   }
 ) {
   checkEnv({ required: ['NODE_ENV'] })
@@ -106,7 +116,8 @@ export function createServer(
     logger: getLoggerOptions(options),
     genReqId: makeReqIdGenerator(),
     trustProxy: process.env.TRUSTED_PROXY_IPS,
-    ...options
+    ...options,
+    https: options.https ?? null
   })
   if (options.name) {
     server.decorate('name', options.name)
@@ -233,7 +244,8 @@ export async function startServer(
     }
   )
   return await new Promise(resolve => {
-    server.listen({ port, host: '0.0.0.0' }, (error, address) => {
+    // Listen on both :: (IPv6) and 0.0.0.0 (IPv4)
+    server.listen({ port, host: '::', ipv6Only: false }, (error, address) => {
       if (error) {
         server.log.fatal({ msg: `Application startup error`, error, address })
         process.exit(1)

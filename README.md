@@ -25,8 +25,8 @@
 ## Installation
 
 ```shell
+$ pnpm add fastify-micro
 $ yarn add fastify-micro
-# or
 $ npm i fastify-micro
 ```
 
@@ -490,6 +490,36 @@ createServer({
 
 If for some reason you wish to disable service health monitoring, you can set
 the `FASTIFY_MICRO_DISABLE_SERVICE_HEALTH_MONITORING` environment variable to `true`.
+
+## HTTPS
+
+You can enable HTTPS by passing a TLS configuration to the [`https`](https://nodejs.org/dist/latest-v14.x/docs/api/https.html#https_https_createserver_options_requestlistener) option:
+
+```ts
+import fs from 'node:fs/promises'
+
+createServer({
+  https: {
+    cert: await fs.readFile('path/to/my/cert.pem'),
+    key: await fs.readFile('path/to/my/cert-key.pem')
+  }
+})
+```
+
+> **Note**: if you wish to run unit tests locally, you'll need certificates
+> to run the HTTPS tests.
+>
+> Install [`mkcert`](https://github.com/FiloSottile/mkcert) on your machine,
+> then run `pnpm mkcert` to generate them.
+
+## Code signature
+
+This package is signed with [`sceau`](https://github.com/47ng/sceau).
+You can verify its signature against the following public key:
+
+```shell
+sceau verify --publicKey 4375fc7bacb2f0a931d3a50367ad79f6562f600aad9dd83545544d9c0b2dc7d3
+```
 
 ## License
 
